@@ -1,0 +1,102 @@
+model_weights
+    conv2d_1
+        conv2d_1
+            bias:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "bias:0": shape (6,), type "<f4">
+                index:  /model_weightsconv2d_1conv2d_1bias:0
+            kernel:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "kernel:0": shape (5, 5, 1, 6), type "<f4">
+                index:  /model_weightsconv2d_1conv2d_1kernel:0
+    conv2d_2
+        conv2d_2
+            bias:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "bias:0": shape (16,), type "<f4">
+                index:  /model_weightsconv2d_2conv2d_2bias:0
+            kernel:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "kernel:0": shape (5, 5, 6, 16), type "<f4">
+                index:  /model_weightsconv2d_2conv2d_2kernel:0
+    dense_1
+        dense_1
+            bias:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "bias:0": shape (120,), type "<f4">
+                index:  /model_weightsdense_1dense_1bias:0
+            kernel:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "kernel:0": shape (400, 120), type "<f4">
+                index:  /model_weightsdense_1dense_1kernel:0
+    dense_2
+        dense_2
+            bias:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "bias:0": shape (84,), type "<f4">
+                index:  /model_weightsdense_2dense_2bias:0
+            kernel:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "kernel:0": shape (120, 84), type "<f4">
+                index:  /model_weightsdense_2dense_2kernel:0
+    dense_3
+        dense_3
+            bias:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "bias:0": shape (43,), type "<f4">
+                index:  /model_weightsdense_3dense_3bias:0
+            kernel:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "kernel:0": shape (84, 43), type "<f4">
+                index:  /model_weightsdense_3dense_3kernel:0
+    flatten_1
+    max_pooling2d_1
+    max_pooling2d_2
+optimizer_weights
+    SGD
+        iterations:0
+            type :  <class 'h5py._hl.dataset.Dataset'>
+            value:  <HDF5 dataset "iterations:0": shape (), type "<i8">
+            index:  /optimizer_weightsSGDiterations:0
+    training
+        SGD
+            Variable:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "Variable:0": shape (5, 5, 1, 6), type "<f4">
+                index:  /optimizer_weightstrainingSGDVariable:0
+            Variable_1:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "Variable_1:0": shape (6,), type "<f4">
+                index:  /optimizer_weightstrainingSGDVariable_1:0
+            Variable_2:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "Variable_2:0": shape (5, 5, 6, 16), type "<f4">
+                index:  /optimizer_weightstrainingSGDVariable_2:0
+            Variable_3:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "Variable_3:0": shape (16,), type "<f4">
+                index:  /optimizer_weightstrainingSGDVariable_3:0
+            Variable_4:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "Variable_4:0": shape (400, 120), type "<f4">
+                index:  /optimizer_weightstrainingSGDVariable_4:0
+            Variable_5:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "Variable_5:0": shape (120,), type "<f4">
+                index:  /optimizer_weightstrainingSGDVariable_5:0
+            Variable_6:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "Variable_6:0": shape (120, 84), type "<f4">
+                index:  /optimizer_weightstrainingSGDVariable_6:0
+            Variable_7:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "Variable_7:0": shape (84,), type "<f4">
+                index:  /optimizer_weightstrainingSGDVariable_7:0
+            Variable_8:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "Variable_8:0": shape (84, 43), type "<f4">
+                index:  /optimizer_weightstrainingSGDVariable_8:0
+            Variable_9:0
+                type :  <class 'h5py._hl.dataset.Dataset'>
+                value:  <HDF5 dataset "Variable_9:0": shape (43,), type "<f4">
+                index:  /optimizer_weightstrainingSGDVariable_9:0

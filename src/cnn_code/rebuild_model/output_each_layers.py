@@ -85,9 +85,8 @@ class ColorLogging:
             info = str(info)
         print(ColorLogging.colorStr("{level}: {time} {info}".format(level="CRITICAL", time=ColorLogging.getTimeStr(), info=info), color="purple"))
 
-
 def relu(mat):
-    return np.maximum(mat, 0)
+    return np.maximum(mat, 0) # elemenwise
 
 def conv(src, kernal):
     """
@@ -96,131 +95,83 @@ def conv(src, kernal):
     :param kernal: (row, col, depth)
     :return:
     """
-    return (src * kernal).sum()
+    assert len(src.shape) == 3 and len(kernal.shape) == 3 and src.shape == kernal.shape, "src shape invalid"
+    return (src * kernal).sum() # 两个三维矩阵对应位置的元素逐个求乘积 最后求和
 
 def conv2d(src, kernal):
+    """
+    要求原始图像和 卷积核 深度相同
+    :param src: (row, col, depth)
+    :param kernal: (row, col, depth)
+    :return:
+    """
     srcShape = src.shape
     kernalShape = kernal.shape
-    assert len(kernalShape) == 3, "kernal shape invalid"
-    assert kernalShape[2] == srcShape[2], "source and kernal depth does not match"
+
+    # 形状匹配验证
+    assert len(kernalShape) == 3 and \
+           len(srcShape) == 3 and \
+           srcShape[0] >= kernalShape[0] and \
+           srcShape[1] >= kernalShape[1] and \
+           srcShape[2] == kernalShape[2], "kernal shape invalid"
+
+
     resultRows = srcShape[0] - kernalShape[0] + 1
     resultCols = srcShape[1] - kernalShape[1] + 1
     resMat = np.zeros((resultRows, resultCols), dtype=np.float64)
     for rStart in range(resultRows):
         for cStart in range(resultCols):
-            srcs = src[rStart: rStart + kernalShape[0], cStart: cStart+ kernalShape[1]]
-            resMat[rStart][cStart] = conv(srcs, kernal)
+            oneSrc = src[rStart: rStart + kernalShape[0], cStart: cStart+ kernalShape[1]]
+            resMat[rStart][cStart] = conv(oneSrc, kernal)
     return resMat
 
-def maxPool2D(src, size=(2, 2)):
-    assert len(size) == 2, "invalid size"
+def maxPool2D(src, windowSize=(2, 2)):
+    """
+    :param src: (row, col, depth)
+    :param size:
+    :return: (row, col, depth)
+    """
+    assert len(windowSize) == 2, "invalid size"
+    rowShape = src.shape[0]
+    colShape = src.shape[1]
+
+    for r in range(0, rowShape, windowSize[0]):
+        for c in range(0, colShape, windowSize[1]):
 
 
 def conv2DLayer(src, kernal, bias, activeFunc=relu):
     kernals = [kernal[:, :, :, i] for i in range(kernal.shape[3])]
     res = []
     for oneKernal, oneBias in zip(kernals, bias):
-        res.append(conv2d(src, oneKernal) + oneBias)
-    return activeFunc(np.array(res))
+        res.append(activeFunc(conv2d(src, oneKernal) + oneBias))
+    return np.stack(res, axis=-1)
 
 def getDiff(mat1, mat2):
     assert mat1.shape == mat2.shape, "two array shape should be same"
     return abs(mat1 - mat2).sum()
 
+def
 
 if __name__ == "__main__":
     #载入模型文件
-    model = load_model('data/models/lenet_relu_model_all.hdf5')
+    dataPath = "/home/szh-920/workspace/master_graduate/data"
+    all_model = load_model('{0}/models/lenet_relu_model_all.hdf5'.format(dataPath))
+    with h5py.File("{0}/data_set/dataSet.hdf5".format(dataPath), "r") as data_f:
+        train_x = data_f["/train_x"]
+        train_y = data_f["/train_y"]
+        print(type(train_x))
+        print(type(train_y))
+        oneImg = np.array(train_x)[1]
+    conv2d_1_Model = load_model("{0}/models/layer0_conv2d_1.hdf5".format(dataPath))
+    conv2d_1_layer_ModelOutput = conv2d_1_Model.predict(np.array([oneImg]))
 
-    #f = h5py.File("data/dataSet.hdf5", "r")
+    print(conv2d_1_layer_ModelOutput.shape)
 
-    conv2d_1_layer = model.get_layer("conv2d_1")
-    max_pooling2d_1_layer = model.get_layer("max_pooling2d_1")
-    conv2d_2_layer = model.get_layer("conv2d_2")
-    max_pooling2d_2_layer = model.get_layer("max_pooling2d_2")
-    dense_1_layer = model.get_layer("dense_1")
-    dense_2_layer = model.get_layer("dense_2")
-    dense_3_layer = model.get_layer("dense_3")
-
-    conv2d_1_layer_model = Model(inputs=model.input, outputs=conv2d_1_layer.output)
-    max_pooling2d_1_layer_model = Model(inputs=model.input, outputs=max_pooling2d_1_layer.output)
-    conv2d_2_layer_model = Model(inputs=model.input, outputs=conv2d_2_layer.output)
-    max_pooling2d_2_layer_model = Model(inputs=model.input, outputs=max_pooling2d_2_layer.output)
-    dense_1_layer_model = Model(inputs=model.input, outputs=dense_1_layer.output)
-    dense_2_layer_model = Model(inputs=model.input, outputs=dense_2_layer.output)
-    dense_3_layer_model = Model(inputs=model.input, outputs=dense_3_layer.output)
-
-
-    conv2d_1_layer_model.save("data/models/layer0_conv2d_1.hdf5")
-    max_pooling2d_1_layer_model.save("data/models/layer1_max_pooling2d_1.hdf5")
-    conv2d_2_layer_model.save("data/models/layer2_conv2d_2.hdf5")
-    max_pooling2d_2_layer_model.save("data/models/layer3_max_pooling2d_2.hdf5")
-    dense_1_layer_model.save("data/models/layer4_dense_1.hdf5")
-    dense_2_layer_model.save("data/models/layer5_dense_2.hdf5")
-    dense_3_layer_model.save("data/models/layer6_dense_3.hdf5")
 
 
 
     #conv2d_1_layer_model_output = conv2d_1_layer_model.predict(test_imgs)
-    #max_pooling2d_1_layer_model_output = max_pooling2d_1_layer_model.predict(test_imgs)
-    #conv2d_2_layer_model_output = conv2d_2_layer_model.predict(test_imgs)
-    #max_pooling2d_2_layer_model_output = max_pooling2d_2_layer_model.predict(test_imgs)
-    #dense_1_layer_model_output = dense_1_layer_model.predict(test_imgs)
-    #dense_2_layer_model_output = dense_2_layer_model.predict(test_imgs)
-    #dense_3_layer_model_output = dense_3_layer_model.predict(test_imgs)
-
-    #ColorLogging.warn("l0- input_layer:          output shape {0}".format(test_imgs.shape))
-    #ColorLogging.warn("l1- conv2d_1_layer        output shape {0}".format(conv2d_1_layer_model_output.shape))
-    #ColorLogging.warn("l2- max_pooling2d_1_layer output shape {0}".format(max_pooling2d_1_layer_model_output.shape))
-    #ColorLogging.warn("l3- conv2d_2_layer        output shape {0}".format(conv2d_2_layer_model_output.shape))
-    #ColorLogging.warn("l4- max_pooling2d_2_layer output shape {0}".format(max_pooling2d_2_layer_model_output.shape))
-    #ColorLogging.warn("l5- dense_1_layer         output shape {0}".format(dense_1_layer_model_output.shape))
-    #ColorLogging.warn("l6- dense_2_layer         output shape {0}".format(dense_2_layer_model_output.shape))
-    #ColorLogging.warn("l7- dense_3_layer         output shape {0}".format(dense_3_layer_model_output.shape))
-
-    #output_mats = {}
-    #output_mats["input"] = test_imgs
-    #output_mats["conv2d_1"] = conv2d_1_layer_model_output
-    #output_mats["max_pooling2d_1"] = max_pooling2d_1_layer_model_output
-    #output_mats["conv2d_2"] = conv2d_2_layer_model_output
-    #output_mats["max_pooling2d_2"] = max_pooling2d_2_layer_model_output
-    #output_mats["dense_1_layer"] = dense_1_layer_model_output
-    #output_mats["dense_2_layer"] = dense_2_layer_model_output
-    #output_mats["dense_3_layer"] = dense_3_layer_model_output
-
-    #layers = {}
-    #layers["conv2d_1"] = conv2d_1_layer
-    #layers["max_pooling2d_1"] = max_pooling2d_1_layer
-    #layers["conv2d_2"] = conv2d_2_layer
-    #layers["max_pooling2d_2"] = max_pooling2d_2_layer
-    #layers["dense_1_layer"] = dense_1_layer
-    #layers["dense_2_layer"] = dense_2_layer
-    #layers["dense_3_layer"] = dense_3_layer
-
-    # 保存中间结果的输出
-    #with open("data/each_layer_output_mats.pickle", "wb") as f:
-    #    pickle.dump(output_mats, f)
-
     #kernals, bias = layers["conv2d_1"].get_weights()
-#
-    #print(kernals.dtype)
-    #print(bias.dtype)
-#
-    #print("bias shape: {0}".format(bias.shape))
-    #print("kernals shape: {0}".format(kernals.shape))
-#
-    #my_conv_res = np.stack(conv2DLayer(test_imgs[0], kernals, bias), axis=2)
-    #keras_res = output_mats["conv2d_1"][0]
-    #print("my_conv_res shape: {0}".format(my_conv_res.shape))
-    #print("keras conv_1 shape {0}".format(keras_res.shape))
-#
-    #print("------")
-    #print(keras_res)
-    #print("-----")
-    #print(my_conv_res)
-
-
-    #f.close()
 
 
 

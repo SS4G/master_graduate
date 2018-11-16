@@ -10,10 +10,11 @@ sys.path.append('/home/szh-920/workspace')
 
 from master_graduate.logging import ColorLogging
 
-def video2Images(videoFile, imagePath):
+def video2Images(videoFile, imagePath, resize=None):
     """
     :param videoFile: 视频文件 需要全路径
     :param imagePath: 图片文件输出的全路径
+    :param resize: width height
     :return:
     """
     # 创建一个新的空目录
@@ -22,7 +23,7 @@ def video2Images(videoFile, imagePath):
 
     os.makedirs(imagePath)
 
-    assert os.path.exists(videoFile),  ColorLogging.colorStr("video file not exists", "red")
+    assert os.path.exists(videoFile),  ColorLogging.colorStr("video file {0} not exists".format(videoFile), "red")
 
     cap = cv2.VideoCapture(videoFile)
     i = 0
@@ -37,10 +38,10 @@ def video2Images(videoFile, imagePath):
             ret, frame = cap.read()
             if ret:
                 #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-                cv2.imwrite('{0}/%08d.jpg'.format(imagePath) % (i, ), frame)
-                #if i % 100 == 0:
-                #    ColorLogging.debug('{0}/%08d.jpg size {1} \r'.format(imagePath, frame.shape) % (i, ))
-                #i += 1
+                if resize is None:
+                    cv2.imwrite('{0}/%08d.jpg'.format(imagePath) % (i, ), frame)
+                else:
+                    cv2.imwrite('{0}/%08d.jpg'.format(imagePath) % (i,), cv2.resize(frame, resize))
             else:
                 cap.release()
                 break

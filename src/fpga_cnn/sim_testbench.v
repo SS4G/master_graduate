@@ -1,6 +1,7 @@
 `timescale 10ns / 1ns
 module logic_test;
 
+reg [7:0] neg_num;
 reg clk = 1'b0;
 reg [3:0] cnt;
 reg [3:0] in;
@@ -10,6 +11,7 @@ wire [3:0] output_signal;
 
 initial
 begin
+neg_num = -1;
 rst_n = 1;
 clk = 0;
 cnt = 0;

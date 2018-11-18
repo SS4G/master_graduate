@@ -76,7 +76,6 @@ class BinaryCalcUtil:
     def floatToBin(floatVal, bits):
         assert floatVal < 1, "a"
         res = []
-        curIdx = 1
         for i in range(bits):
             bitVal = 1 / (2 ** (i + 1))
             if abs(floatVal - bitVal) < 0.000000000000001:
@@ -88,6 +87,17 @@ class BinaryCalcUtil:
             elif floatVal < bitVal:
                 res.append('0')
         return "".join(res)
+
+    @staticmethod
+    def toBinStr(intVal, bits):
+        if intVal >= 0:
+            binStr = bin(intVal)[2:]
+            return '0' * (bits - len(binStr)) + binStr
+        else:
+            binStr = bin(abs(intVal))[2:]
+            binStr = '0' * (bits - len(binStr)) + binStr
+            binStr = BinaryCalcUtil.add_1(BinaryCalcUtil.reverseBit(binStr))
+            return binStr
 
 
 class UnsignedBinaryNum:
@@ -204,39 +214,110 @@ class FixPointNum:
     """
     二进制表示的定点数
     """
+    def __init__(self, floatVal=None, intBits=16, pointBits=16, fixVal=None):
+        self.pointBits = pointBits
+        self.intBits = intBits
+        if fixVal is None:
+            self.fixValue = int(floatVal * (1 << pointBits))
+        else:
+            self.fixValue = fixVal
 
-    def __init__(self, floatVal=None, intBits=8, pointBits=8):
-        self.integerPart = SignedBinaryNum(val=int(floatVal), bits=intBits)
-        self.pointPart = None
+        if not (-(2 ** (pointBits + intBits - 1)) <= self.fixValue <= 2 ** (pointBits + intBits - 1) - 1): #out of range
+            tmp_bin_str = BinaryCalcUtil.toBinStr(self.fixValue, bits=64)[-(intBits+pointBits):]
+            #print("------", BinaryCalcUtil.toBinStr(self.fixValue, bits=64))
+            #print(tmp_bin_str)
+
+            if tmp_bin_str[0] == '0':
+                self.fixValue = int(tmp_bin_str, 2)
+            else:
+                # 128 may cause
+                if tmp_bin_str == '1' + ('0' * (intBits + pointBits)):
+                    self.fixValue = -int(tmp_bin_str, 2)
+                self.fixValue = -int(BinaryCalcUtil.reverseBit(BinaryCalcUtil.sub_1(tmp_bin_str)), 2)
+                #print("fixed value", self.fixValue)
+        self.binstr = BinaryCalcUtil.toBinStr(self.fixValue, intBits + pointBits)
+        #print(self.binstr)
 
     def __add__(self, other):
-        pass
-
-    def __sub__(self, other):
-        pass
+        assert other.intBits == self.intBits and other.pointBits == self.pointBits, "invalid fix num"
+        return FixPointNum(fixVal=self.fixValue + other.fixValue, intBits=self.intBits, pointBits=self.pointBits)
 
     def __mul__(self, other):
-        pass
+        assert other.intBits == self.intBits and other.pointBits == self.pointBits, "invalid fix num"
+        return FixPointNum(fixVal=(self.fixValue * other.fixValue) >> self.pointBits , intBits=self.intBits, pointBits=self.pointBits)
 
     def __le__(self, other):
-        pass
+        return self.fixValue <= other.fixValue
 
     def __ge__(self, other):
-        pass
+        return self.fixValue >= other.fixValue
 
     def __lt__(self, other):
-        pass
+        return self.fixValue < other.fixValue
 
     def __gt__(self, other):
-        pass
+        return self.fixValue > other.fixValue
 
     def __eq__(self, other):
-        pass
+        return self.fixValue == other.fixValue
+
+    def __ne__(self, other):
+        return self.fixValue != other.fixValue
+
+    def getFloatVal(self):
+        return self.fixValue / (2 ** self.pointBits)
+
+    def __repr__(self):
+        #return "{0} Bin:{1}.{2}, Fix:{3}".format(self.getFloatVal(), self.binstr[:self.intBits], self.binstr[self.intBits:], self.fixValue)
+        return "{0}".format(self.getFloatVal())
+
+
+def test(testCases):
+    for casea, caseb in testCases:
+        fixNuma = FixPointNum(floatVal=casea, pointBits=16, intBits=16)
+        fixNumb = FixPointNum(floatVal=caseb, pointBits=16, intBits=16)
+
+        print(casea, "*" ,caseb)
+        res = fixNuma * fixNumb
+        #print(res)
+        print(abs(res.getFloatVal() - (casea * caseb)))
+
+        print(casea, "+" ,caseb)
+        res = fixNuma + fixNumb
+        #print(res)
+        print(abs(res.getFloatVal() - (casea + caseb)))
 
 
 if __name__ == "__main__":
-    floatVal = 0.55
-    print(BinaryCalcUtil.floatToBin(floatVal, 16))
+    floatVal = 0.75
+    testCaseNormal = [
+        (3.0, 0.75),
+        (4.0, 0.75),
+        (-3.0, 0.75),
+        (-4.0, 0.25),
+        (127, 0.25),
+        (3.726191231, 0.2509108211),
+    ]
+
+    testCaseOverflow = [
+        (127.0, 127.0),
+        (255.0, 255.0),
+        (-1.0, -128.0),
+        (-128.0, -128.0),
+        (-255.0, -255.0)
+    ]
+
+    #test(testCaseNormal)
+
+    print("----------------------")
+    #test(testCaseOverflow)
+
+    print(FixPointNum(floatVal=127.0, pointBits=8, intBits=8))
+    print(FixPointNum(floatVal=255.0, pointBits=8, intBits=8))
+    print(FixPointNum(floatVal=128.0, pointBits=8, intBits=8))
+    print(FixPointNum(floatVal=-128.0, pointBits=8, intBits=8))
+    print(FixPointNum(floatVal=-1.0, pointBits=8, intBits=8))
+
 
 
 

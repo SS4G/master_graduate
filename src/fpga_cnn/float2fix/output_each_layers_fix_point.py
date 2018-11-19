@@ -3,6 +3,7 @@
 
 import h5py
 import numpy as np
+import tqdm
 from keras.models import Sequential, load_model, Model
 import pickle
 from keras.layers import Dense,Flatten,Conv2D,MaxPool2D
@@ -91,6 +92,19 @@ class ColorLogging:
         if not isinstance(info, str):
             info = str(info)
         print(ColorLogging.colorStr("{level}: {time} {info}".format(level="CRITICAL", time=ColorLogging.getTimeStr(), info=info), color="purple"))
+
+
+def getMaxIdx(vec):
+    maxIdx = -1
+    maxVal = -np.inf
+    for idx, val in enumerate(vec):
+        if maxVal < val:
+            maxVal = val
+            maxIdx = idx
+    return maxIdx
+
+def calcPrecision(res, label):
+    return ((res == label).sum() / len(res)) * 100
 
 def fixPointMat(floatMat):
     matShape = floatMat.shape
@@ -224,8 +238,9 @@ def myModel(imgs, weightsHDF5, recordHDF5File):
     #weights.visit(ColorLogging.critical)
 
     layerOutputFile = h5py.File(recordHDF5File, "w")
-    output = [[] for i in range(8)]
-    for idx, oneImg in enumerate(imgs):
+    output = [[] for i in range(9)]
+    idx = 0
+    for oneImg in tqdm.tqdm(imgs):
         output[0].append(conv2DLayer(fixPointMat(oneImg), fixPointMat(np.array(weights["conv2d_1/conv2d_1/kernel:0"])), fixPointMat(np.array(weights["conv2d_1/conv2d_1/bias:0"])), activeFunc=relu))
         output[1].append(maxPool2DLayer(output[0][idx], (2, 2)))
         output[2].append(   conv2DLayer(output[1][idx], fixPointMat(np.array(weights["conv2d_2/conv2d_2/kernel:0"])), fixPointMat(np.array(weights["conv2d_2/conv2d_2/bias:0"])), activeFunc=relu))
@@ -234,6 +249,8 @@ def myModel(imgs, weightsHDF5, recordHDF5File):
         output[5].append(    denseLayer(output[4][idx], kernal=fixPointMat(np.array(weights["dense_1/dense_1/kernel:0"])), bias=fixPointMat(np.array(weights["dense_1/dense_1/bias:0"]))))
         output[6].append(    denseLayer(output[5][idx], kernal=fixPointMat(np.array(weights["dense_2/dense_2/kernel:0"])), bias=fixPointMat(np.array(weights["dense_2/dense_2/bias:0"]))))
         output[7].append(    denseLayer(output[6][idx], kernal=fixPointMat(np.array(weights["dense_3/dense_3/kernel:0"])), bias=fixPointMat(np.array(weights["dense_3/dense_3/bias:0"])), activeFunc=softmax))
+        output[8].append(getMaxIdx(output[7][idx]))
+        idx += 1
     layerOutputFile.create_dataset("conv_2d_1_output", data=np.array([deFixPointMat(i) for i in output[0]]))
     layerOutputFile.create_dataset("pool_2d_1_output", data=np.array([deFixPointMat(i) for i in output[1]]))
     layerOutputFile.create_dataset("conv_2d_2_output", data=np.array([deFixPointMat(i) for i in output[2]]))
@@ -242,6 +259,7 @@ def myModel(imgs, weightsHDF5, recordHDF5File):
     layerOutputFile.create_dataset("dense___1_output", data=np.array([deFixPointMat(i) for i in output[5]]))
     layerOutputFile.create_dataset("dense___2_output", data=np.array([deFixPointMat(i) for i in output[6]]))
     layerOutputFile.create_dataset("dense___3_output", data=np.array(output[7]))
+    layerOutputFile.create_dataset("final_____output", data=np.array(output[8])) # 最终的分类结果
     layerOutputFile.close()
 
 
@@ -269,7 +287,7 @@ if __name__ == "__main__":
         train_y = data_f["/train_y"]
         print(type(train_x))
         print(type(train_y))
-        imgs = np.array(train_x)[1:10]
+        imgs = np.array(train_x)[0::300]
 
     #flatten_1 = all_model.get_layer("flatten_1")
     #layerf_Model = Model(inputs=all_model.input, outputs=flatten_1.output)
@@ -293,6 +311,7 @@ if __name__ == "__main__":
     layer5_ModelOutput = layer5_Model.predict(imgs)
     layer6_ModelOutput = layer6_Model.predict(imgs)
     layer7_ModelOutput = layer7_Model.predict(imgs)
+    layer8_ModelOutput = np.array([getMaxIdx(softmaxVec) for softmaxVec in layer7_ModelOutput])
 
     ColorLogging.info("layeri_ModelOutput shape {0}".format(layeri_ModelOutput.shape))
     ColorLogging.info("layer0_ModelOutput shape {0}".format(layer0_ModelOutput.shape))
@@ -304,7 +323,7 @@ if __name__ == "__main__":
     ColorLogging.info("layer6_ModelOutput shape {0}".format(layer6_ModelOutput.shape))
     ColorLogging.info("layer7_ModelOutput shape {0}".format(layer7_ModelOutput.shape))
 
-    with h5py.File("{0}/model_output/keras_model_fixPoint_output.hdf5".format(dataPath), "w") as f:
+    with h5py.File("{0}/model_output/keras_model_output_standard.hdf5".format(dataPath), "w") as f:
         f.create_dataset("conv_2d_1_output", data=layer0_ModelOutput)
         f.create_dataset("pool_2d_1_output", data=layer1_ModelOutput)
         f.create_dataset("conv_2d_2_output", data=layer2_ModelOutput)
@@ -313,12 +332,13 @@ if __name__ == "__main__":
         f.create_dataset("dense___1_output", data=layer5_ModelOutput)
         f.create_dataset("dense___2_output", data=layer6_ModelOutput)
         f.create_dataset("dense___3_output", data=layer7_ModelOutput)
+        f.create_dataset("final_____output", data=layer8_ModelOutput) # 最终的分类结果
+
+    ColorLogging.debug("begin preidict fix point")
 
     with h5py.File('{0}/models/lenet_relu_model_all.hdf5'.format(dataPath), "r") as f:
         myModel(imgs, f["/model_weights"], "{0}/model_output/rebuild_model_fix_output.hdf5".format(dataPath))
     
-
-
 
     #conv2d_1_layer_model_output = conv2d_1_layer_model.predict(test_imgs)
     #kernals, bias = layers["conv2d_1"].get_weights()

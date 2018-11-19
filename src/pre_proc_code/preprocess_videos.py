@@ -12,13 +12,14 @@ import master_graduate.src.pre_proc_code.video_split_cat as vsc
 import master_graduate.src.pre_proc_code.preprocess_imgs as primg
 
 if __name__ == "__main__":
-    jobName = "job_redonly_2_{0}".format(dt.datetime.now().strftime("%Y%m%d_%H%M%S") )
+    jobName = "job_redonly_3_{0}".format(dt.datetime.now().strftime("%Y%m%d_%H%M%S"))
+    videoName = "181119_02.mp4"
     dataPath = "/home/szh-920/workspace/master_graduate/data"          # 所有的数据的根目录
-    srcVideoFile = "{0}/video_data/source_video/pre_source_3.mp4".format(dataPath)  # 要分析的视频所在的根目录
+    srcVideoFile = "{0}/video_data/source_video/{1}".format(dataPath, videoName)  # 要分析的视频所在的根目录
     #srcVideoFile = "{0}/video_data/source_video/pre_source_1.mp4".format(dataPath)  # 要分析的视频所在的根目录
     srcImagesPath = "{0}/video_frames/{job_name}_src".format(dataPath, job_name=jobName)   # 视频分帧厚度存储目录
-    videoOutBasePath = "{0}/video_frames/{job_name}_processed".format(dataPath, job_name=jobName)
-    processedVideoPath = "{0}/video_data/{job_name}_processed".format(dataPath, job_name=jobName)
+    videoOutBasePath = "{0}/video_frames/{job_name}_{video_name}_processed".format(dataPath, job_name=jobName, video_name=videoName)
+    processedVideoPath = "{0}/video_data/{job_name}_{video_name}_processed".format(dataPath, job_name=jobName, video_name=videoName)
 
     # 保证要写入的目录本来是不存在的 避免覆盖掉有用的数据
     # 存放大量图片的路径需要事先不存在 存放视频的路径需要存在

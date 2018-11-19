@@ -24,11 +24,47 @@ class BinaryCalcUtil:
         carry = 0
         res = ['0', ] * bits
         for i in range(bits - 1, -1, -1):
-            res[i] = '1' if int(binStr1[i]) + int(binStr2[i]) + carry == 1 else '0'
-            carry = 0 if int(binStr1[i]) + int(binStr2[i]) + carry != 2 else 1
+            thisBit = int(binStr1[i]) + int(binStr2[i]) + carry
+            res[i] = '1' if thisBit % 2 == 1 else '0'
+            carry = 0 if int(binStr1[i]) + int(binStr2[i]) + carry < 2 else 1
 
-            print(i, res[i], carry)
+            #print(i, res[i], carry)
         return "".join(res)
+
+    @staticmethod
+    def multipliexerUnsigned(binStr1, binStr2, bits=16):
+        res = []  # 保证不为空
+        for idx, c in enumerate(reversed(binStr1)):
+            if c == '1':
+                tmp_res = []
+                tmp_res.append('0' * (bits - idx))
+                tmp_res.append(binStr2)
+                tmp_res.append('0' * idx)
+                res.append("".join(tmp_res))
+        print(res)
+        tmpRes = '0' * (2 * bits)
+        for i in res:
+            tmpRes = BinaryCalcUtil.adder(tmpRes, i, bits=2 * bits)
+        return tmpRes
+
+    @staticmethod
+    def multipliexer(binStr1, binStr2, bits=16, signed=False):
+        if not signed:
+            return BinaryCalcUtil.multipliexerUnsigned(binStr1, binStr2, bits=bits)
+        else:
+            posFlag1 = True
+            posFlag2 = True
+            if binStr1[0] == '1':
+                posFlag1 = False
+                binStr1 = BinaryCalcUtil.add_1(BinaryCalcUtil.reverseBit(binStr1))
+            if binStr2[0] == '1':
+                posFlag2 = False
+                binStr2 = BinaryCalcUtil.add_1(BinaryCalcUtil.reverseBit(binStr2))
+            absRes = BinaryCalcUtil.multipliexerUnsigned(binStr1, binStr2, bits=bits)
+            if posFlag1 is posFlag2:
+                return absRes
+            else:
+                return BinaryCalcUtil.add_1(BinaryCalcUtil.reverseBit(absRes))
 
     @staticmethod
     def sub_1(binStr):
@@ -99,6 +135,17 @@ class BinaryCalcUtil:
             binStr = BinaryCalcUtil.add_1(BinaryCalcUtil.reverseBit(binStr))
             return binStr
 
+    @staticmethod
+    def toIntVal(binStr, signed=True):
+        posFlag = True
+        if signed:
+            if binStr[0] == '1':
+                posFlag = False
+                binStr = BinaryCalcUtil.reverseBit(BinaryCalcUtil.sub_1(binStr))
+        res = 0
+        for idx, c in enumerate(reversed(binStr)):
+            res += 0 if c == '0' else 1 << idx
+        return res if posFlag else -res
 
 class UnsignedBinaryNum:
     """
@@ -235,7 +282,7 @@ class FixPointNum:
                     self.fixValue = -int(tmp_bin_str, 2)
                 self.fixValue = -int(BinaryCalcUtil.reverseBit(BinaryCalcUtil.sub_1(tmp_bin_str)), 2)
                 #print("fixed value", self.fixValue)
-        self.binstr = BinaryCalcUtil.toBinStr(self.fixValue, intBits + pointBits)
+        #self.binstr = BinaryCalcUtil.toBinStr(self.fixValue, intBits + pointBits)
         #print(self.binstr)
 
     def __add__(self, other):
@@ -309,15 +356,16 @@ if __name__ == "__main__":
 
     #test(testCaseNormal)
 
-    print("----------------------")
-    #test(testCaseOverflow)
-
-    print(FixPointNum(floatVal=127.0, pointBits=8, intBits=8))
-    print(FixPointNum(floatVal=255.0, pointBits=8, intBits=8))
-    print(FixPointNum(floatVal=128.0, pointBits=8, intBits=8))
-    print(FixPointNum(floatVal=-128.0, pointBits=8, intBits=8))
-    print(FixPointNum(floatVal=-1.0, pointBits=8, intBits=8))
-
-
+    #print("----------------------")
+    ##test(testCaseOverflow)
+    #
+    #print(FixPointNum(floatVal=127.0, pointBits=8, intBits=8))
+    #print(FixPointNum(floatVal=255.0, pointBits=8, intBits=8))
+    #print(FixPointNum(floatVal=128.0, pointBits=8, intBits=8))
+    #print(FixPointNum(floatVal=-128.0, pointBits=8, intBits=8))
+    #print(FixPointNum(floatVal=-1.0, pointBits=8, intBits=8))
+    binRes = BinaryCalcUtil.multipliexer('11111111', '11111111', bits=8)
+    print(binRes)
+    print(BinaryCalcUtil.toIntVal(binRes, signed=True))
 
 

@@ -8,3 +8,18 @@ layer4_ModelOutput shape (x, 400)        # flatten
 layer5_ModelOutput shape (x, 120)        # dense_1
 layer6_ModelOutput shape (x, 84)         # dense_2
 layer7_ModelOutput shape (x, 43)         # dense_3
+
+conv1_mul = 31*31*5*5*6 = 144150
+conv1_add = 144149
+pool1_cmp = (2*2-1)*15*15*6 = 4050
+conv2_mul = 5*5*11*11*6*16 = 290400
+conv2_add = 290400
+pool_cmp = (2*2-1)*11*11*16 = 5808
+dense1_mul = 400*120 = 48000
+dense1_add = (400-1)*120 = 47880
+dense2_mul = 120*84 = 10080
+dense2_add = 9996
+dense3_mul = 3612
+dense3_add = 3612
+
+144150+144149+4050+290400+290400+5808+48000+47880+10080+9996+7000

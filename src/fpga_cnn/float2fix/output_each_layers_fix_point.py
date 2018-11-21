@@ -285,9 +285,10 @@ if __name__ == "__main__":
     with h5py.File("{0}/data_set/dataSet.hdf5".format(dataPath), "r") as data_f:
         train_x = data_f["/train_x"]
         train_y = data_f["/train_y"]
-        print(type(train_x))
-        print(type(train_y))
-        imgs = np.array(train_x)[0::300]
+        test_x = data_f["/test_x"]
+        test_y = data_f["/test_y"]
+        imgs = np.array(test_x)[0::6]
+        labels = np.array(test_y)[0::6]
 
     #flatten_1 = all_model.get_layer("flatten_1")
     #layerf_Model = Model(inputs=all_model.input, outputs=flatten_1.output)
@@ -333,11 +334,12 @@ if __name__ == "__main__":
         f.create_dataset("dense___2_output", data=layer6_ModelOutput)
         f.create_dataset("dense___3_output", data=layer7_ModelOutput)
         f.create_dataset("final_____output", data=layer8_ModelOutput) # 最终的分类结果
+        f.create_dataset("target_label", data=labels)
 
     ColorLogging.debug("begin preidict fix point")
 
     with h5py.File('{0}/models/lenet_relu_model_all.hdf5'.format(dataPath), "r") as f:
-        myModel(imgs, f["/model_weights"], "{0}/model_output/rebuild_model_fix_output.hdf5".format(dataPath))
+        myModel(imgs, f["/model_weights"], "{0}/model_output/rebuild_model_fix_8_16_output.hdf5".format(dataPath))
     
 
     #conv2d_1_layer_model_output = conv2d_1_layer_model.predict(test_imgs)

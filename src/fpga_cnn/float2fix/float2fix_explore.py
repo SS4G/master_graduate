@@ -261,7 +261,7 @@ class FixPointNum:
     """
     二进制表示的定点数
     """
-    def __init__(self, floatVal=None, intBits=16, pointBits=16, fixVal=None):
+    def __init__(self, floatVal=None, intBits=8, pointBits=16, fixVal=None):
         self.pointBits = pointBits
         self.intBits = intBits
         if fixVal is None:
@@ -286,11 +286,11 @@ class FixPointNum:
         #print(self.binstr)
 
     def __add__(self, other):
-        assert other.intBits == self.intBits and other.pointBits == self.pointBits, "invalid fix num"
+        #assert other.intBits == self.intBits and other.pointBits == self.pointBits, "invalid fix num"
         return FixPointNum(fixVal=self.fixValue + other.fixValue, intBits=self.intBits, pointBits=self.pointBits)
 
     def __mul__(self, other):
-        assert other.intBits == self.intBits and other.pointBits == self.pointBits, "invalid fix num"
+        #assert other.intBits == self.intBits and other.pointBits == self.pointBits, "invalid fix num"
         return FixPointNum(fixVal=(self.fixValue * other.fixValue) >> self.pointBits , intBits=self.intBits, pointBits=self.pointBits)
 
     def __le__(self, other):

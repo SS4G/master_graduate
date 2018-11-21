@@ -88,6 +88,7 @@ module TestWapper(
     clk,
 	rst_n,
 	begin_wr,
+    sel,
 	a_0;
 	a_1;
 	a_2;
@@ -99,10 +100,11 @@ module TestWapper(
 	dout;
 	outen
 );
-input clk,
-input rst_n,
-input begin_wr,
+input clk;
+input rst_n;
+input begin_wr;
 
+input [7:0] sel;
 input [7:0] a_0;
 input [7:0] a_1;
 input [7:0] a_2;
@@ -112,21 +114,20 @@ input [7:0] a_5;
 input [7:0] a_6;
 input [7:0] a_7;
 output [7:0] dout;
-output outen
+output outen;
+
+wire [7:0] data_sel;
 
 TestInner inner(
     .clk(clk),
 	.rsta(rst_n),
 	.beginwr(begin_wr),
-	.in_data0(a_0),
-	.in_data1(a_1),
-	.in_data2(a_2),
-	.in_data3(a_3),
-	.in_data4(a_4),
-	.in_data5(a_5),
-	.in_data6(a_6),
-	.in_data7(a_7),
+	.in_data0(data_sel),
 	.out_data(a_8),
 	.out_en(dout)
 );
+
+
+assign data_sel = if 
+
 endmodule

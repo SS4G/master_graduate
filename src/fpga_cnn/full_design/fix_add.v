@@ -1,5 +1,5 @@
 //fix point adder 
-//delay ? clock cycles
+//delay 1 clock cycles
 module FixAdd(
     rst_n,
     clk,

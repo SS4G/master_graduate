@@ -1,66 +1,47 @@
 //add tree with 26 port 32 bits
 //delay 5 clock cycles
+//#test_passed
 module AddTree_26p(
     rst_n,
 	clk,
-	in_00,
-	in_01,
-	in_02,
-	in_03,
-	in_04,
-	in_05,
-	in_06,
-	in_07,
-	in_08,
-	in_09,
-	in_10,
-	in_11,
-	in_12,
-	in_13,
-	in_14,
-	in_15,
-	in_16,
-	in_17,
-	in_18,
-	in_19,
-	in_20,
-	in_21,
-	in_22,
-	in_23,
-	in_24,
-	in_25, 
+	in_25P,//25 个同样位宽的端口
+	in_bias, //一个单独的端口
 	out
 );   
     parameter WIDTH = 16;
     input rst_n;
 	input clk;
-    input [WIDTH-1:0] in_00;
-	input [WIDTH-1:0] in_01;
-	input [WIDTH-1:0] in_02;
-	input [WIDTH-1:0] in_03;
-	input [WIDTH-1:0] in_04;
-	input [WIDTH-1:0] in_05;
-	input [WIDTH-1:0] in_06;
-	input [WIDTH-1:0] in_07;
-	input [WIDTH-1:0] in_08;
-	input [WIDTH-1:0] in_09;
-	input [WIDTH-1:0] in_10;
-	input [WIDTH-1:0] in_11;
-	input [WIDTH-1:0] in_12;
-	input [WIDTH-1:0] in_13;
-	input [WIDTH-1:0] in_14;
-	input [WIDTH-1:0] in_15;
-	input [WIDTH-1:0] in_16;
-	input [WIDTH-1:0] in_17;
-	input [WIDTH-1:0] in_18;
-	input [WIDTH-1:0] in_19;
-	input [WIDTH-1:0] in_20;
-	input [WIDTH-1:0] in_21;
-	input [WIDTH-1:0] in_22;
-	input [WIDTH-1:0] in_23;
-	input [WIDTH-1:0] in_24;
-	input [WIDTH-1:0] in_25;
+    
 	output [WIDTH-1:0] out;
+    
+    input [WIDTH*25-1:0] in_25P;
+    input [WIDTH-1:0]    in_bias;
+    
+    wire [WIDTH-1:0] in_00;
+	wire [WIDTH-1:0] in_01;
+	wire [WIDTH-1:0] in_02;
+	wire [WIDTH-1:0] in_03;
+	wire [WIDTH-1:0] in_04;
+	wire [WIDTH-1:0] in_05;
+	wire [WIDTH-1:0] in_06;
+	wire [WIDTH-1:0] in_07;
+	wire [WIDTH-1:0] in_08;
+	wire [WIDTH-1:0] in_09;
+	wire [WIDTH-1:0] in_10;
+	wire [WIDTH-1:0] in_11;
+	wire [WIDTH-1:0] in_12;
+	wire [WIDTH-1:0] in_13;
+	wire [WIDTH-1:0] in_14;
+	wire [WIDTH-1:0] in_15;
+	wire [WIDTH-1:0] in_16;
+	wire [WIDTH-1:0] in_17;
+	wire [WIDTH-1:0] in_18;
+	wire [WIDTH-1:0] in_19;
+	wire [WIDTH-1:0] in_20;
+	wire [WIDTH-1:0] in_21;
+	wire [WIDTH-1:0] in_22;
+	wire [WIDTH-1:0] in_23;
+	wire [WIDTH-1:0] in_24;
 	
 	wire [WIDTH-1:0] tmp_out_00_00;
 	wire [WIDTH-1:0] tmp_out_00_10;
@@ -117,6 +98,37 @@ module AddTree_26p(
 	wire [WIDTH-1:0] tmp_out_05_00;
 	
 	
+    debus_1to26 debus(
+    .com_bus_in(in_25P),
+    .sep_bus_out00(in_00),
+    .sep_bus_out01(in_01),
+    .sep_bus_out02(in_02),
+    .sep_bus_out03(in_03),
+    .sep_bus_out04(in_04),
+    .sep_bus_out05(in_05),
+    .sep_bus_out06(in_06),
+    .sep_bus_out07(in_07),
+    .sep_bus_out08(in_08),
+    .sep_bus_out09(in_09),
+    .sep_bus_out10(in_10),
+    .sep_bus_out11(in_11),
+    .sep_bus_out12(in_12),
+    .sep_bus_out13(in_13),
+    .sep_bus_out14(in_14),
+    .sep_bus_out15(in_15),
+    .sep_bus_out16(in_16),
+    .sep_bus_out17(in_17),
+    .sep_bus_out18(in_18),
+    .sep_bus_out19(in_19),
+    .sep_bus_out20(in_20),
+    .sep_bus_out21(in_21),
+    .sep_bus_out22(in_22),
+    .sep_bus_out23(in_23),
+    .sep_bus_out24(in_24),
+    .sep_bus_out25()
+);
+    
+    
 	assign tmp_out_00_00 = in_00;
 	assign tmp_out_00_01 = in_01;
 	assign tmp_out_00_02 = in_02;
@@ -142,7 +154,7 @@ module AddTree_26p(
 	assign tmp_out_00_22 = in_22;
 	assign tmp_out_00_23 = in_23;
 	assign tmp_out_00_24 = in_24;
-	assign tmp_out_00_25 = in_25;
+	assign tmp_out_00_25 = in_bias;
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_00(
         .rst_n(rst_n),
@@ -319,7 +331,7 @@ module AddTree_26p(
         .rst_n(rst_n),
         .clk(clk),
     	.inA(tmp_out_01_12),
-    	.inB(0'b0),
+    	.inB(64'h0),
     	.outSum(tmp_out_02_06)
     );
     
@@ -355,7 +367,7 @@ module AddTree_26p(
         .rst_n(rst_n),
         .clk(clk),
     	.inA(tmp_out_02_06),
-    	.inB(0'b0),
+    	.inB(64'h0),
     	.outSum(tmp_out_03_03)
     );
     

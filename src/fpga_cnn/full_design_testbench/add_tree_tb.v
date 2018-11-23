@@ -7,37 +7,46 @@ integer i, j, k;
 integer start;
 reg[15:0] tmp;
 wire [15:0] out;
+wire [25*16-1:0] data_mid;
 integer cnt;
+
+
+
+bus_26to1 DUT26_1(
+    .com_bus_out(data_mid),
+    .sep_bus_in00(test_data[00]),
+    .sep_bus_in01(test_data[01]),
+    .sep_bus_in02(test_data[02]),
+    .sep_bus_in03(test_data[03]),
+    .sep_bus_in04(test_data[04]),
+    .sep_bus_in05(test_data[05]),
+    .sep_bus_in06(test_data[06]),
+    .sep_bus_in07(test_data[07]),
+    .sep_bus_in08(test_data[08]),
+    .sep_bus_in09(test_data[09]),
+    .sep_bus_in10(test_data[10]),
+    .sep_bus_in11(test_data[11]),
+    .sep_bus_in12(test_data[12]),
+    .sep_bus_in13(test_data[13]),
+    .sep_bus_in14(test_data[14]),
+    .sep_bus_in15(test_data[15]),
+    .sep_bus_in16(test_data[16]),
+    .sep_bus_in17(test_data[17]),
+    .sep_bus_in18(test_data[18]),
+    .sep_bus_in19(test_data[19]),
+    .sep_bus_in20(test_data[20]),
+    .sep_bus_in21(test_data[21]),
+    .sep_bus_in22(test_data[22]),
+    .sep_bus_in23(test_data[23]),
+    .sep_bus_in24(test_data[24]),
+    .sep_bus_in25(0)
+);
 
 AddTree_26p DUT(
     .rst_n(rst_n),
 	.clk(clk),
-	.in_00(test_data[00]),
-	.in_01(test_data[01]),
-	.in_02(test_data[02]),
-	.in_03(test_data[03]),
-	.in_04(test_data[04]),
-	.in_05(test_data[05]),
-	.in_06(test_data[06]),
-	.in_07(test_data[07]),
-	.in_08(test_data[08]),
-	.in_09(test_data[09]),
-	.in_10(test_data[10]),
-	.in_11(test_data[11]),
-	.in_12(test_data[12]),
-	.in_13(test_data[13]),
-	.in_14(test_data[14]),
-	.in_15(test_data[15]),
-	.in_16(test_data[16]),
-	.in_17(test_data[17]),
-	.in_18(test_data[18]),
-	.in_19(test_data[19]),
-	.in_20(test_data[20]),
-	.in_21(test_data[21]),
-	.in_22(test_data[22]),
-	.in_23(test_data[23]),
-	.in_24(test_data[24]),
-	.in_25(test_data[25]), 
+	.in_25P(data_mid),
+	.in_bias(test_data[25]),  
 	.out(out)
 );  
 
@@ -91,6 +100,7 @@ begin
 		tmp = tmp + test_data[i];
 	end 
     
+    #200;
     tmp = 0;
     for(i = 0; i < 26; i=i+1) 
 	begin

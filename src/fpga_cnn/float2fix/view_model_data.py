@@ -16,4 +16,3 @@ if __name__ == "__main__":
     dataPath = "/home/szh-920/workspace/master_graduate/data"
     all_model = load_model('{0}/models/lenet_relu_model_all.hdf5'.format(dataPath))
 
-    weights = all_model.get_weights()

@@ -1,3 +1,4 @@
+
 class ColorLogging:
     """
         分级别答应不同颜色的日志
@@ -74,3 +75,4 @@ class ColorLogging:
         if not isinstance(info, str):
             info = str(info)
         print(ColorLogging.colorStr("{level}: {time} {info}".format(level="CRITICAL", time=ColorLogging.getTimeStr(), info=info), color="purple"))
+

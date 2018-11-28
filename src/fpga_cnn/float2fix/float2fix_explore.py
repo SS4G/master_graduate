@@ -368,4 +368,3 @@ if __name__ == "__main__":
     print(binRes)
     print(BinaryCalcUtil.toIntVal(binRes, signed=True))
 
-

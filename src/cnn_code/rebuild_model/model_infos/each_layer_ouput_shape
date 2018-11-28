@@ -1,3 +1,4 @@
+
 # x is amount of imgs
 layeri_ModelOutput shape (x, 35, 35, 1)  # input
 layer0_ModelOutput shape (x, 31, 31, 6)  # conv2d_1  

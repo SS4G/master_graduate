@@ -1,0 +1,10 @@
+# x is amount of imgs
+layeri_ModelOutput shape (x, 35, 35, 1)  # input
+layer0_ModelOutput shape (x, 31, 31, 6)  # conv2d_1
+layer1_ModelOutput shape (x, 15, 15, 6)  # max_pool_1
+layer2_ModelOutput shape (x, 11, 11, 16) # conv2d_2
+layer3_ModelOutput shape (x, 5, 5, 16)   # max_pool_2
+layer4_ModelOutput shape (x, 400)        # flatten
+layer5_ModelOutput shape (x, 120)        # dense_1
+layer6_ModelOutput shape (x, 84)         # dense_2
+layer7_ModelOutput shape (x, 43)         # dense_3

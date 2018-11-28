@@ -1,5 +1,9 @@
+#将模型中的参数替换为定点数
+
+
 import h5py
 import numpy as np
+import tqdm
 from keras.models import Sequential, load_model, Model
 import pickle
 from keras.layers import Dense,Flatten,Conv2D,MaxPool2D
@@ -10,6 +14,9 @@ import os
 import json
 import sys
 from functools import reduce
+sys.path.append('/home/szh-920/workspace')
+
+from master_graduate.src.fpga_cnn.float2fix.float2fix_explore import FixPointNum
 
 class ColorLogging:
     """
@@ -86,10 +93,32 @@ class ColorLogging:
             info = str(info)
         print(ColorLogging.colorStr("{level}: {time} {info}".format(level="CRITICAL", time=ColorLogging.getTimeStr(), info=info), color="purple"))
 
+
+def getMaxIdx(vec):
+    maxIdx = -1
+    maxVal = -np.inf
+    for idx, val in enumerate(vec):
+        if maxVal < val:
+            maxVal = val
+            maxIdx = idx
+    return maxIdx
+
+def calcPrecision(res, label):
+    return ((res == label).sum() / len(res)) * 100
+
+def fixPointMat(floatMat):
+    matShape = floatMat.shape
+    return np.array([FixPointNum(floatVal=float(i)) for i in floatMat.flat]).reshape(matShape)
+
+def deFixPointMat(fixMat):
+    matShape = fixMat.shape
+    return np.array([i.getFloatVal() for i in fixMat.flat]).reshape(matShape)
+
 def relu(mat):
-    return np.maximum(mat, 0) # elemenwise
+    return np.maximum(mat, [FixPointNum(floatVal=0.0)]) # elemenwise
 
 def softmax(x):
+    x = deFixPointMat(x)
     return np.exp(x) / np.sum(np.exp(x), axis=0)
 
 def conv(src, kernal):
@@ -123,13 +152,12 @@ def conv2d(src, kernal):
            srcShape[1] >= kernalShape[1] and \
            srcShape[2] == kernalShape[2], "kernal shape invalid"
 
-
     resultRows = srcShape[0] - kernalShape[0] + 1
     resultCols = srcShape[1] - kernalShape[1] + 1
-    resMat = np.zeros((resultRows, resultCols), dtype=np.float64)
+    resMat = np.zeros((resultRows, resultCols), dtype=object)
     for rStart in range(resultRows):
         for cStart in range(resultCols):
-            oneSrc = src[rStart: rStart + kernalShape[0], cStart: cStart+ kernalShape[1]]
+            oneSrc = src[rStart: rStart + kernalShape[0], cStart: cStart + kernalShape[1]]
             resMat[rStart][cStart] = conv(oneSrc, kernal)
     return resMat
 
@@ -172,7 +200,7 @@ def maxPool2DLayer(src, windowSize=(2, 2)):
     colShape = src.shape[1] - (src.shape[1] % colStride)
     #ColorLogging.error("{0} {1}".format(rowShape, colShape))
 
-    res = np.zeros((rowShape // rowStride, colShape // colStride, depthShape))
+    res = np.zeros((rowShape // rowStride, colShape // colStride, depthShape), dtype=object)
     #ColorLogging.debug("res.shape {0}".format(res.shape))
     for r in range(0, rowShape, rowStride):
         for c in range(0, colShape, colStride):
@@ -187,8 +215,6 @@ def flattenLayer(src):
     assert len(src.shape) == 3, "数据应该是3维"
     return src.reshape((src.shape[0] * src.shape[1] * src.shape[2],))
 
-
-
 def denseLayer(src, kernal, bias, activeFunc=relu):
     """
     :param src:
@@ -198,7 +224,6 @@ def denseLayer(src, kernal, bias, activeFunc=relu):
     """
     assert kernal.shape[1] == bias.shape[0]
     return activeFunc(kernal.T.dot(src) + bias)
-
 
 def myModel(imgs, weightsHDF5, recordHDF5File):
     """
@@ -213,24 +238,28 @@ def myModel(imgs, weightsHDF5, recordHDF5File):
     #weights.visit(ColorLogging.critical)
 
     layerOutputFile = h5py.File(recordHDF5File, "w")
-    output = [[] for i in range(8)]
-    for idx, oneImg in enumerate(imgs):
-        output[0].append(conv2DLayer(oneImg, np.array(weights["conv2d_1/conv2d_1/kernel:0"]), np.array(weights["conv2d_1/conv2d_1/bias:0"]), activeFunc=relu))
+    output = [[] for i in range(9)]
+    idx = 0
+    for oneImg in tqdm.tqdm(imgs):
+        output[0].append(conv2DLayer(fixPointMat(oneImg), fixPointMat(np.array(weights["conv2d_1/conv2d_1/kernel:0"])), fixPointMat(np.array(weights["conv2d_1/conv2d_1/bias:0"])), activeFunc=relu))
         output[1].append(maxPool2DLayer(output[0][idx], (2, 2)))
-        output[2].append(   conv2DLayer(output[1][idx], np.array(weights["conv2d_2/conv2d_2/kernel:0"]), np.array(weights["conv2d_2/conv2d_2/bias:0"]), activeFunc=relu))
+        output[2].append(   conv2DLayer(output[1][idx], fixPointMat(np.array(weights["conv2d_2/conv2d_2/kernel:0"])), fixPointMat(np.array(weights["conv2d_2/conv2d_2/bias:0"])), activeFunc=relu))
         output[3].append(maxPool2DLayer(output[2][idx], (2, 2)))
         output[4].append(  flattenLayer(output[3][idx]))
-        output[5].append(    denseLayer(output[4][idx], kernal=np.array(weights["dense_1/dense_1/kernel:0"]), bias=np.array(weights["dense_1/dense_1/bias:0"])))
-        output[6].append(    denseLayer(output[5][idx], kernal=np.array(weights["dense_2/dense_2/kernel:0"]), bias=np.array(weights["dense_2/dense_2/bias:0"])))
-        output[7].append(    denseLayer(output[6][idx], kernal=np.array(weights["dense_3/dense_3/kernel:0"]), bias=np.array(weights["dense_3/dense_3/bias:0"]), activeFunc=softmax))
-    layerOutputFile.create_dataset("conv_2d_1_output", data=np.array(output[0]))
-    layerOutputFile.create_dataset("pool_2d_1_output", data=np.array(output[1]))
-    layerOutputFile.create_dataset("conv_2d_2_output", data=np.array(output[2]))
-    layerOutputFile.create_dataset("pool_2d_2_output", data=np.array(output[3]))
-    layerOutputFile.create_dataset("flatten_1_output", data=np.array(output[4]))
-    layerOutputFile.create_dataset("dense___1_output", data=np.array(output[5]))
-    layerOutputFile.create_dataset("dense___2_output", data=np.array(output[6]))
+        output[5].append(    denseLayer(output[4][idx], kernal=fixPointMat(np.array(weights["dense_1/dense_1/kernel:0"])), bias=fixPointMat(np.array(weights["dense_1/dense_1/bias:0"]))))
+        output[6].append(    denseLayer(output[5][idx], kernal=fixPointMat(np.array(weights["dense_2/dense_2/kernel:0"])), bias=fixPointMat(np.array(weights["dense_2/dense_2/bias:0"]))))
+        output[7].append(    denseLayer(output[6][idx], kernal=fixPointMat(np.array(weights["dense_3/dense_3/kernel:0"])), bias=fixPointMat(np.array(weights["dense_3/dense_3/bias:0"])), activeFunc=softmax))
+        output[8].append(getMaxIdx(output[7][idx]))
+        idx += 1
+    layerOutputFile.create_dataset("conv_2d_1_output", data=np.array([deFixPointMat(i) for i in output[0]]))
+    layerOutputFile.create_dataset("pool_2d_1_output", data=np.array([deFixPointMat(i) for i in output[1]]))
+    layerOutputFile.create_dataset("conv_2d_2_output", data=np.array([deFixPointMat(i) for i in output[2]]))
+    layerOutputFile.create_dataset("pool_2d_2_output", data=np.array([deFixPointMat(i) for i in output[3]]))
+    layerOutputFile.create_dataset("flatten_1_output", data=np.array([deFixPointMat(i) for i in output[4]]))
+    layerOutputFile.create_dataset("dense___1_output", data=np.array([deFixPointMat(i) for i in output[5]]))
+    layerOutputFile.create_dataset("dense___2_output", data=np.array([deFixPointMat(i) for i in output[6]]))
     layerOutputFile.create_dataset("dense___3_output", data=np.array(output[7]))
+    layerOutputFile.create_dataset("final_____output", data=np.array(output[8])) # 最终的分类结果
     layerOutputFile.close()
 
 
@@ -238,12 +267,28 @@ if __name__ == "__main__":
     #载入模型文件
     dataPath = "/home/szh-920/workspace/master_graduate/data"
     all_model = load_model('{0}/models/lenet_relu_model_all.hdf5'.format(dataPath))
+
+    #a = np.random.rand(3, 4) * 10 - 5
+    #b = np.random.rand(3, 4) * 10 - 5
+
+    #print(a * b)
+    #print(fixPointMat(a) * fixPointMat(b))
+    #
+    #print(a + b)
+    #print(fixPointMat(a) + fixPointMat(b))
+
+
+    #print(a)
+    #print(relu(fixPointMat(a)))
+
+
     with h5py.File("{0}/data_set/dataSet.hdf5".format(dataPath), "r") as data_f:
         train_x = data_f["/train_x"]
         train_y = data_f["/train_y"]
-        print(type(train_x))
-        print(type(train_y))
-        imgs = np.array(train_x)[1:10]
+        test_x = data_f["/test_x"]
+        test_y = data_f["/test_y"]
+        imgs = np.array(test_x)[0::6]
+        labels = np.array(test_y)[0::6]
 
     #flatten_1 = all_model.get_layer("flatten_1")
     #layerf_Model = Model(inputs=all_model.input, outputs=flatten_1.output)
@@ -267,6 +312,7 @@ if __name__ == "__main__":
     layer5_ModelOutput = layer5_Model.predict(imgs)
     layer6_ModelOutput = layer6_Model.predict(imgs)
     layer7_ModelOutput = layer7_Model.predict(imgs)
+    layer8_ModelOutput = np.array([getMaxIdx(softmaxVec) for softmaxVec in layer7_ModelOutput])
 
     ColorLogging.info("layeri_ModelOutput shape {0}".format(layeri_ModelOutput.shape))
     ColorLogging.info("layer0_ModelOutput shape {0}".format(layer0_ModelOutput.shape))
@@ -278,7 +324,7 @@ if __name__ == "__main__":
     ColorLogging.info("layer6_ModelOutput shape {0}".format(layer6_ModelOutput.shape))
     ColorLogging.info("layer7_ModelOutput shape {0}".format(layer7_ModelOutput.shape))
 
-    with h5py.File("{0}/model_output/keras_model_output.hdf5".format(dataPath), "w") as f:
+    with h5py.File("{0}/model_output/keras_model_output_standard.hdf5".format(dataPath), "w") as f:
         f.create_dataset("conv_2d_1_output", data=layer0_ModelOutput)
         f.create_dataset("pool_2d_1_output", data=layer1_ModelOutput)
         f.create_dataset("conv_2d_2_output", data=layer2_ModelOutput)
@@ -287,9 +333,14 @@ if __name__ == "__main__":
         f.create_dataset("dense___1_output", data=layer5_ModelOutput)
         f.create_dataset("dense___2_output", data=layer6_ModelOutput)
         f.create_dataset("dense___3_output", data=layer7_ModelOutput)
+        f.create_dataset("final_____output", data=layer8_ModelOutput) # 最终的分类结果
+        f.create_dataset("target_label", data=labels)
+
+    ColorLogging.debug("begin preidict fix point")
 
     with h5py.File('{0}/models/lenet_relu_model_all.hdf5'.format(dataPath), "r") as f:
-        myModel(imgs, f["/model_weights"], "{0}/model_output/rebuild_model_output.hdf5".format(dataPath))
+        myModel(imgs, f["/model_weights"], "{0}/model_output/rebuild_model_fix_8_16_output.hdf5".format(dataPath))
+    
 
     #conv2d_1_layer_model_output = conv2d_1_layer_model.predict(test_imgs)
     #kernals, bias = layers["conv2d_1"].get_weights()

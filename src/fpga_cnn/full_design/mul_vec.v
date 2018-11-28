@@ -1,7 +1,6 @@
 //delay 1 cycles 
 //#test_passed
 module MulVec_25p(
-    rst_n,
 	clk,
 	inA_25P,
 	inB_25P,
@@ -15,7 +14,6 @@ module MulVec_25p(
     output [WIDTH*25-1: 0] outP_25P;
     
     input clk;
-	input rst_n;
     
     wire [WIDTH-1:0] inA_00;
     wire [WIDTH-1:0] inA_01;
@@ -188,14 +186,10 @@ module MulVec_25p(
     );
 
     
-    
-    
-    
-    
-    
+
     
 	FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_00(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_00),
 		.inB(inB_00),
@@ -204,7 +198,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_01(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_01),
 		.inB(inB_01),
@@ -213,7 +207,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_02(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_02),
 		.inB(inB_02),
@@ -222,7 +216,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_03(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_03),
 		.inB(inB_03),
@@ -231,7 +225,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_04(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_04),
 		.inB(inB_04),
@@ -240,7 +234,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_05(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_05),
 		.inB(inB_05),
@@ -249,7 +243,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_06(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_06),
 		.inB(inB_06),
@@ -258,7 +252,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_07(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_07),
 		.inB(inB_07),
@@ -267,7 +261,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_08(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_08),
 		.inB(inB_08),
@@ -276,7 +270,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_09(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_09),
 		.inB(inB_09),
@@ -285,7 +279,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_10(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_10),
 		.inB(inB_10),
@@ -294,7 +288,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_11(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_11),
 		.inB(inB_11),
@@ -303,7 +297,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_12(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_12),
 		.inB(inB_12),
@@ -312,7 +306,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_13(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_13),
 		.inB(inB_13),
@@ -321,7 +315,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_14(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_14),
 		.inB(inB_14),
@@ -330,7 +324,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_15(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_15),
 		.inB(inB_15),
@@ -339,7 +333,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_16(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_16),
 		.inB(inB_16),
@@ -348,7 +342,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_17(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_17),
 		.inB(inB_17),
@@ -357,7 +351,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_18(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_18),
 		.inB(inB_18),
@@ -366,7 +360,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_19(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_19),
 		.inB(inB_19),
@@ -375,7 +369,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_20(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_20),
 		.inB(inB_20),
@@ -384,7 +378,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_21(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_21),
 		.inB(inB_21),
@@ -393,7 +387,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_22(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_22),
 		.inB(inB_22),
@@ -402,7 +396,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_23(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_23),
 		.inB(inB_23),
@@ -411,7 +405,7 @@ module MulVec_25p(
 
 
 	 FixMul #(.WIDTH(WIDTH), .POINT_WIDTH(POINT_WIDTH)) inst_24(
-		.rst_n(rst_n),
+		
 		.clk(clk),
 		.inA(inA_24),
 		.inB(inB_24),

@@ -1,0 +1,132 @@
+分享到：
+这里的内存模型指的是内存的行为模型。Verilog中提供了两维数组来帮助我们建立内存的行为模型。具体来说，就是可以将内存宣称为一个reg类型的数组，这个数组中的任何一个单元都可以通过一个下标去访问。这样的数组的定义方式如下：
+
+reg [wordsize : 0] array_name [0 : arraysize];
+
+      例如：
+
+reg [7:0] my_memory [0:255];
+
+其中 [7:0] 是内存的宽度，而[0:255]则是内存的深度（也就是有多少存储单元），其中宽度为8位，深度为256。地址0对应着数组中的0存储单元。
+
+         如果要存储一个值到某个单元中去，可以这样做：
+
+         my_memory [address] = data_in;
+
+      而如果要从某个单元读出值，可以这么做：
+
+         data_out = my_memory [address];
+
+         但要是只需要读一位或者多个位，就要麻烦一点，因为Verilog不允许读/写一个位。这时，就需要使用一个变量转换一下：
+
+         例如：
+
+         data_out = my_memory[address];
+
+data_out_it_0 = data_out[0];
+
+      这里首先从一个单元里面读出数据，然后再取出读出的数据的某一位的值。
+
+      初始化内存
+
+       初始化内存有多种方式，这里介绍的是使用$readmemb 和 $readmemh系统任务来将保存在文件中的数据填充到内存单元中去。$readmemb 和 $readmemh是类似的，只不过$readmemb用于内存的二进制表示，而$readmemh则用于内存内容的16进制表示。这里以$readmemh系统任务来介绍。
+
+      语法
+
+$readmemh("file_name", mem_array, start_addr, stop_addr);
+
+         注意的是：
+
+         file_name是包含数据的文本文件名，mem_array是要初始化的内存单元数组名，start_addr 和 stop_addr是可选的，指示要初始化单元的起始地址和结束地址。
+
+         下面是一个简单的例子：
+
+module  memory ();
+
+reg [7:0] my_memory [0:255];
+
+ 
+
+initial begin
+
+$readmemh("memory.list", my_memory);
+
+end
+
+endmodule
+
+       这里使用内存文件memory.list来初始化my_memory数组。
+
+         而下面就是一个内存文件的例子。
+
+//  Comments are allowed 
+
+CC         // This is first address i.e 8'h00
+
+AA         // This is second address i.e 8'h01
+
+@55     // Jump to new address 8'h55
+
+5A         // This is address 8'h55
+
+69         // This is address 8'h56
+
+ 
+
+         对于内存文件，要注意的是下列几点：
+
+a、注释标记//在内存文件中是被允许的；
+
+b、使用@符号将跳到新的目标地址，没有@符号就表示地址将顺序递增。
+
+ 
+
+         关于这个系统任务，有下列常见的用法：
+
+1、顺序初始化所有的数组单元；
+
+这种情况下，可以使用@符号来指示地址，也可以不使用它，而只在每一行存放要存放的数据。
+
+这样数据将顺序按地址递增存放，从0地址开始。
+
+ 
+
+2、只初始化部分的数组单元；
+
+这种情况下，可以使用@符号来指示下一个要初始化的地址，然后对该地址单元进行初始化。例
+
+如下列的内存文件就只初始化8'h00，8'h01，8'h55和8'h564个内存地址单元。
+
+//  Comments are allowed 
+
+CC         // This is first address i.e 8'h00
+
+AA         // This is second address i.e 8'h01
+
+@55     // Jump to new address 8'h55
+
+5A         // This is address 8'h55
+
+69         // This is address 8'h56
+
+ 
+
+3、只初始化数组的地址区间的一部分单元。
+
+这个时候，还可以使用$readmemh任务的start_addr 和 stop_addr选项来指定初始化的范围。
+
+例如，只初始化100到104这5个单元，就可以这么做：
+
+内存文件memory.list定义为：
+
+CC
+
+AA
+
+55 
+
+5A
+
+69
+
+       而$readmemh("memory.list", my_memory， 100， 104);就指定使用memory.list来初始化my_memory的100-104单元。

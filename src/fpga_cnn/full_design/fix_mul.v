@@ -2,7 +2,6 @@
 //delay 1 clock cycles
 //#test_passed
 module FixMul(
-    rst_n,
     clk,
 	inA,
 	inB,
@@ -11,12 +10,11 @@ module FixMul(
     parameter WIDTH = 16;      //total width for fixpoint
 	parameter POINT_WIDTH = 8; //width of point part
 	
-	input rst_n;
 	input clk;
 	
 	input  [WIDTH-1:0] inA;
 	input  [WIDTH-1:0] inB;
-	output [2*WIDTH-1:0] outP;
+	output [WIDTH-1:0] outP;
 	 
 	wire [2*WIDTH-1:0] mul_out; 
 	

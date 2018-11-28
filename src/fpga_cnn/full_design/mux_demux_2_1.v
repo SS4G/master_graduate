@@ -19,7 +19,7 @@ begin
     case (select)
     8'd0:  output_data = in_00;
     8'd1:  output_data = in_01;
-    default: output_data = 32'hffff_ffff;
+    default: output_data = 32'h0;
     endcase 
 end
 endmodule 
@@ -52,6 +52,7 @@ begin
     begin 
         out_00 = 0;
         out_01 = 0;
+    end
     endcase 
 end
 endmodule 

@@ -1,7 +1,6 @@
 //fix point adder 
 //delay 1 clock cycles
 module FixAdd(
-    rst_n,
     clk,
 	inA,
 	inB,
@@ -9,7 +8,6 @@ module FixAdd(
 );
     parameter WIDTH = 16;      //total width for fixpoint
 	
-    input rst_n;
     input clk;	
 	input  [WIDTH-1:0] inA;
 	input  [WIDTH-1:0] inB;

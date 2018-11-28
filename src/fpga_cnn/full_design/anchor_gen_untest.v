@@ -2,7 +2,7 @@
 //先行后列的方式根据图像生成锚点 供地址生成器使用
 //
 //delay ? cycles
-module AnchorGen_2D(
+module ConvAnchorGen_2D(
     clk,
     rst_n,
     enable, //工作使能信号 1->0 复位内部状态

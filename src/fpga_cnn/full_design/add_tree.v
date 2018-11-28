@@ -2,14 +2,12 @@
 //delay 5 clock cycles
 //#test_passed
 module AddTree_26p(
-    rst_n,
 	clk,
 	in_25P,//25 个同样位宽的端口
 	in_bias, //一个单独的端口
 	out
 );   
     parameter WIDTH = 16;
-    input rst_n;
 	input clk;
     
 	output [WIDTH-1:0] out;
@@ -157,7 +155,7 @@ module AddTree_26p(
 	assign tmp_out_00_25 = in_bias;
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_00(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_00_00),
     	.inB(tmp_out_00_01),
@@ -166,7 +164,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_01(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_00_02),
     	.inB(tmp_out_00_03),
@@ -175,7 +173,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_02(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_00_04),
     	.inB(tmp_out_00_05),
@@ -184,7 +182,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_03(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_00_06),
     	.inB(tmp_out_00_07),
@@ -193,7 +191,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_04(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_00_08),
     	.inB(tmp_out_00_09),
@@ -202,7 +200,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_05(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_00_10),
     	.inB(tmp_out_00_11),
@@ -211,7 +209,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_06(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_00_12),
     	.inB(tmp_out_00_13),
@@ -220,7 +218,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_07(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_00_14),
     	.inB(tmp_out_00_15),
@@ -229,7 +227,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_08(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_00_16),
     	.inB(tmp_out_00_17),
@@ -238,7 +236,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_09(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_00_18),
     	.inB(tmp_out_00_19),
@@ -247,7 +245,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_10(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_00_20),
     	.inB(tmp_out_00_21),
@@ -256,7 +254,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_11(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_00_22),
     	.inB(tmp_out_00_23),
@@ -265,7 +263,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_01_12(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_00_24),
     	.inB(tmp_out_00_25),
@@ -274,7 +272,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_02_00(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_01_00),
     	.inB(tmp_out_01_01),
@@ -283,7 +281,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_02_01(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_01_02),
     	.inB(tmp_out_01_03),
@@ -292,7 +290,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_02_02(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_01_04),
     	.inB(tmp_out_01_05),
@@ -301,7 +299,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_02_03(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_01_06),
     	.inB(tmp_out_01_07),
@@ -310,7 +308,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_02_04(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_01_08),
     	.inB(tmp_out_01_09),
@@ -319,7 +317,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_02_05(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_01_10),
     	.inB(tmp_out_01_11),
@@ -328,7 +326,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_02_06(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_01_12),
     	.inB(64'h0),
@@ -337,7 +335,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_03_00(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_02_00),
     	.inB(tmp_out_02_01),
@@ -346,7 +344,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_03_01(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_02_02),
     	.inB(tmp_out_02_03),
@@ -355,7 +353,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_03_02(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_02_04),
     	.inB(tmp_out_02_05),
@@ -364,7 +362,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_03_03(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_02_06),
     	.inB(64'h0),
@@ -373,7 +371,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_04_00(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_03_00),
     	.inB(tmp_out_03_01),
@@ -382,7 +380,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_04_01(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_03_02),
     	.inB(tmp_out_03_03),
@@ -391,7 +389,7 @@ module AddTree_26p(
     
 
     FixAdd #(.WIDTH(WIDTH)) fix_add_inst_05_00(
-        .rst_n(rst_n),
+        
         .clk(clk),
     	.inA(tmp_out_04_00),
     	.inB(tmp_out_04_01),

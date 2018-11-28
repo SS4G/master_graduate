@@ -190,4 +190,5 @@ class Module:
         res.update(self.outputPorts)
         for k in res:
             assert k == res[k].sigName
+
         return res

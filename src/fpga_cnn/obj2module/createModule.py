@@ -1,3 +1,4 @@
+
 from master_graduate.src.fpga_cnn.obj2module.obj2module import Signal, Module, ModuleUtil
 
 # 向不同的模块定义函数中传递不同的
@@ -141,4 +142,5 @@ if __name__ == "__main__":
     moduleLib = {}
     createAddPrimitive(moduleLib, 32)
     createMulPrimitive(moduleLib, 32)
+
     createAdderModule(moduleLib, 32)

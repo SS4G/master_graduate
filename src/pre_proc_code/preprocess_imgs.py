@@ -136,7 +136,7 @@ def processImage(imgFile, outputPaths):
 
     #模糊
     blurred=cv2.blur(mask_added, (9,9))
-    #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['03_blur'].rstrip('/'), imgId), blurred)
+    cv2.imwrite("{0}/{1}.jpg".format(outputPaths['03_blur'].rstrip('/'), imgId), blurred)
     #二值化
     ret,binary=cv2.threshold(blurred, BINARY_THRESOLD, 255, cv2.THRESH_BINARY)
     cv2.imwrite("{0}/{1}.jpg".format(outputPaths['04_binary'].rstrip('/'), imgId), binary)
@@ -162,6 +162,7 @@ def processImage(imgFile, outputPaths):
     image, contours, hierarchy=cv2.findContours(dilate.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
 
     res = img.copy()
+    sign_cnt = 0
     for conIdx, con in enumerate(contours):
         #轮廓转换为矩形 返回的对象是(中心点, 长宽, 旋转角)
         rect=cv2.minAreaRect(con)
@@ -181,6 +182,9 @@ def processImage(imgFile, outputPaths):
         #cv2.drawContours 参数 (目标图像, 轮廓点集组)
         if width > 0 and height > 0 and LEFT_SCALE < float(height) / width < RIGHT_SCALE and height * width > AREA_THRESOLD:
             cv2.drawContours(res,[box],-1,(0,0,255),2)
+            sign_img = img[box[1][1]:box[0][1], box[0][0]:box[3][0], :]
+            cv2.imwrite("{0}/{1}_{2}.jpg".format(outputPaths['09_sign'].rstrip('/'), imgId, sign_cnt), sign_img)
+            sign_cnt += 1
         #cv2.drawContours(res, con, -1, (0, 255, 0), 2)
 
     #显示画了标志的原图
@@ -203,13 +207,13 @@ def processImages(srcImagePath, outputBasePath, subsample=None):
         #"02_0_blue_mask":   "{0}/02_0_blue_mask".format(outputBasePath),
         "02_1_red_mask":    "{0}/02_1_red_mask".format(outputBasePath),
         #"02_2_yellow_mask": "{0}/02_2_yellow_mask".format(outputBasePath),
-        #"03_blur":          "{0}/03_blur".format(outputBasePath),
+        "03_blur":          "{0}/03_blur".format(outputBasePath),
         "04_binary":        "{0}/04_binary".format(outputBasePath),
         "05_closed":        "{0}/05_closed".format(outputBasePath),
         "06_erode":         "{0}/06_erode".format(outputBasePath),
         "07_dilated":       "{0}/07_dilated".format(outputBasePath),
         "08_signed_img":    "{0}/08_signed_img".format(outputBasePath),
-        #"09_sign":          "{0}/09_sign".format(outputBasePath),
+        "09_sign":          "{0}/09_sign".format(outputBasePath),
     }
 
     for dir in videoFramePaths.values():

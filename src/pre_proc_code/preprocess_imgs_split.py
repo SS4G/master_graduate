@@ -65,6 +65,31 @@ def getMinRectangel(con):
     y_min = np.min(con[:,1])
     return np.array([[x_min, y_max], [x_min, y_min], [x_max, y_min], [x_max, y_max],])
 
+def splitToGrid(img, grid_shape=(30, 30)):
+    """
+    将图片拆分成 grid_shape 的小格子
+    按照逐行处理的方式放入一个list 中
+    :param img:
+    :param grid_shape:
+    :return:
+    """
+    row = img.shape[0]
+    col = img.shape[1]
+    grid_list = []
+    for row_idx in range(0, row, grid_shape[0]):
+        for col_idx in range(0, col, grid_shape[1]):
+            grid_list.append(img[row_idx: row_idx + grid_shape[0], col_idx: col_idx + grid_shape[0], :])
+    return grid_list
+
+def mergeFromGrid(grid_list, grid_shape=(30, 30), target_shape=(540, 960)):
+    row_grid_cnt = target_shape[0] // grid_shape[0]
+    col_grid_cnt = target_shape[1] // grid_shape[1]
+    row_list = []
+    for i in range(row_grid_cnt):
+        row_list.append(np.hstack(grid_list[i * col_grid_cnt: (i+1) * col_grid_cnt]))
+    img = np.vstack(row_list)
+    return img
+
 def processImage(imgFile, outputPaths):
     """
     :param imgFile: 单个的图片文件路径
@@ -112,57 +137,90 @@ def processImage(imgFile, outputPaths):
     #加载原图
     img = cv2.imread(imgFile)
     #cv2.imwrite('./imgs/00_img.jpg',img)
+    dilated_img_list = []
+    hsv_img_list = []
+    mask_red_img_list = []
+    binary_img_list = []
+    blur_img_list = []
+    close_img_list = []
+    erode_img_list = []
+    dilate_img_list = []
+    for grid_img in splitToGrid(img):
+        hsv = cv2.cvtColor(grid_img, cv2.COLOR_BGR2HSV)
+        #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['01_hsv'].rstrip('/'), imgId), hsv)
+        hsv_img_list.append(hsv)
 
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    cv2.imwrite("{0}/{1}.jpg".format(outputPaths['01_hsv'].rstrip('/'), imgId), hsv)
+        # 提取蓝色区域
+        mask_blue = cv2.inRange(hsv, blue_lower, blue_upper)
+        #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['02_0_blue_mask'].rstrip('/'), imgId), mask_blue)
+        # 提取红色区域
+        mask_red0 = cv2.inRange(hsv, red_lower0, red_upper0)
+        mask_red1 = cv2.inRange(hsv, red_lower1, red_upper1)
+        func_or = np.frompyfunc(lambda x, y: 255 if x > 0 or y > 0 else 0, 2, 1)
 
-    # 提取蓝色区域
-    mask_blue = cv2.inRange(hsv, blue_lower, blue_upper)
-    #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['02_0_blue_mask'].rstrip('/'), imgId), mask_blue)
-    # 提取红色区域
-    mask_red0 = cv2.inRange(hsv, red_lower0, red_upper0)
-    mask_red1 = cv2.inRange(hsv, red_lower1, red_upper1)
-    func_or = np.frompyfunc(lambda x, y: 255 if x > 0 or y > 0 else 0, 2, 1)
+        mask_red = func_or(mask_red0, mask_red1).astype(np.uint8)
+        #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['02_1_red_mask'].rstrip('/'), imgId), mask_red)
+        mask_red_img_list.append(mask_red)
+        # 提取黄色区域
+        mask_yellow = cv2.inRange(hsv,yellow_lower, yellow_upper)
+        #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['02_2_yellow_mask'].rstrip('/'), imgId), mask_yellow)
+        # 将所有过滤出来的区域求和 然后统一处理
+        # 求或函数 如果任意一值 大于0 那么最后值为255
+        #mask_added = np.minimum(reduce(func_or, [mask_blue, mask_yellow, mask_red,]), 255)
+        mask_added = np.minimum(reduce(func_or, [mask_red,]), 255)
+        mask_added = mask_added.astype(np.uint8)
 
-    mask_red = func_or(mask_red0, mask_red1).astype(np.uint8)
-    cv2.imwrite("{0}/{1}.jpg".format(outputPaths['02_1_red_mask'].rstrip('/'), imgId), mask_red)
-    # 提取黄色区域
-    mask_yellow = cv2.inRange(hsv,yellow_lower, yellow_upper)
-    #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['02_2_yellow_mask'].rstrip('/'), imgId), mask_yellow)
-    # 将所有过滤出来的区域求和 然后统一处理
-    # 求或函数 如果任意一值 大于0 那么最后值为255
-    #mask_added = np.minimum(reduce(func_or, [mask_blue, mask_yellow, mask_red,]), 255)
-    mask_added = np.minimum(reduce(func_or, [mask_red,]), 255)
-    mask_added = mask_added.astype(np.uint8)
+        #模糊
+        blurred=cv2.blur(mask_added, BLUR_KERNAL)
+        #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['03_blur'].rstrip('/'), imgId), blurred)
+        blur_img_list.append(blurred)
+        #二值化
+        ret,binary=cv2.threshold(blurred, BINARY_THRESOLD, 255, cv2.THRESH_BINARY)
+        #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['04_binary'].rstrip('/'), imgId), binary)
+        binary_img_list.append(binary)
 
-    #模糊
-    blurred=cv2.blur(mask_added, BLUR_KERNAL)
-    #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['03_blur'].rstrip('/'), imgId), blurred)
-    #二值化
-    ret,binary=cv2.threshold(blurred, BINARY_THRESOLD, 255, cv2.THRESH_BINARY)
-    cv2.imwrite("{0}/{1}.jpg".format(outputPaths['04_binary'].rstrip('/'), imgId), binary)
+        # 使区域闭合无空隙
+        # 创建一个闭合空间的算子
+        #kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (21, 7))
+        #kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
 
-    # 使区域闭合无空隙
-    # 创建一个闭合空间的算子
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (21, 7))
-    #kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+        #closed = binary
+        #closed = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
+        #close_img_list.append(closed)
+        #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['05_closed'].rstrip('/'), imgId), closed)
 
-    #closed = binary
-    closed = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
-    cv2.imwrite("{0}/{1}.jpg".format(outputPaths['05_closed'].rstrip('/'), imgId), closed)
+        #腐蚀和膨胀
+        '''
+        腐蚀操作将会腐蚀图像中白色像素，以此来消除小斑点，
+        而膨胀操作将使剩余的白色像素扩张并重新增长回去。
+        '''
+        dilate = cv2.dilate(binary, np.ones((5, 5), dtype='uint8'), iterations=DILATE_ITERATION)
+        #dilate_img_list.append(dilate)
+        erode = cv2.erode(dilate, np.ones((5, 5), dtype='uint8'), iterations=ERODE_ITERATION)
+        #erode_img_list.append(erode)
+        #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['06_erode'].rstrip('/'), imgId), erode)
 
-    #腐蚀和膨胀
-    '''
-    腐蚀操作将会腐蚀图像中白色像素，以此来消除小斑点，
-    而膨胀操作将使剩余的白色像素扩张并重新增长回去。
-    '''
-    erode=cv2.erode(closed,None,iterations=ERODE_ITERATION)
-    cv2.imwrite("{0}/{1}.jpg".format(outputPaths['06_erode'].rstrip('/'), imgId), erode)
-    dilate=cv2.dilate(erode,None,iterations=DILATE_ITERATION)
-    cv2.imwrite("{0}/{1}.jpg".format(outputPaths['07_dilated'].rstrip('/'), imgId), dilate)
+        #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['07_dilated'].rstrip('/'), imgId), dilate)
+        #dilated_img_list.append(dilate)
+        dilated_img_list.append(erode)
+        # 查找轮廓
+    #hsv_img = mergeFromGrid(hsv_img_list, target_shape=img.shape)
+    #mask_red_img = mergeFromGrid(mask_red_img_list, target_shape=img.shape)
+    #binary_img = mergeFromGrid(binary_img_list, target_shape=img.shape)
+    #blur_img = mergeFromGrid(blur_img_list, target_shape=img.shape)
+    #close_img = mergeFromGrid(close_img_list, target_shape=img.shape)
+    #erode_img = mergeFromGrid(erode_img_list, target_shape=img.shape)
+    #dilate_img = mergeFromGrid(dilate_img_list, target_shape=img.shape)
 
-    # 查找轮廓
-    image, contours, hierarchy=cv2.findContours(dilate.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['01_hsv'].rstrip('/'), imgId), hsv_img)
+    #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['02_1_red_mask'].rstrip('/'), imgId), mask_red_img)
+    #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['03_blur'].rstrip('/'), imgId), blur_img)
+    #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['05_closed'].rstrip('/'), imgId), close_img)
+    #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['06_erode'].rstrip('/'), imgId), erode_img)
+    #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['07_dilated'].rstrip('/'), imgId), dilate_img)
+
+    dilated_img = mergeFromGrid(dilated_img_list, target_shape=img.shape)
+    image, contours, hierarchy = cv2.findContours(dilated_img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     res = img.copy()
     for conIdx, con in enumerate(contours):
@@ -183,7 +241,7 @@ def processImage(imgFile, outputPaths):
         #在原图画出目标区域
         #cv2.drawContours 参数 (目标图像, 轮廓点集组)
         if width > 0 and height > 0 and LEFT_SCALE < float(height) / width < RIGHT_SCALE and height * width > AREA_THRESOLD:
-            cv2.drawContours(res,[box],-1,(0,0,255),1)
+            cv2.drawContours(res,[box],-1,(0,255,0),2)
         #cv2.drawContours(res, con, -1, (0, 255, 0), 2)
 
     #显示画了标志的原图
@@ -202,15 +260,15 @@ def processImages(srcImagePath, outputBasePath, subsample=None):
     pathCheck(inputPath=srcImagePath, outputPath=outputBasePath)
     
     videoFramePaths = {
-        "01_hsv":           "{0}/01_hsv".format(outputBasePath),
+        #"01_hsv":           "{0}/01_hsv".format(outputBasePath),
         #"02_0_blue_mask":   "{0}/02_0_blue_mask".format(outputBasePath),
-        "02_1_red_mask":    "{0}/02_1_red_mask".format(outputBasePath),
+        #"02_1_red_mask":    "{0}/02_1_red_mask".format(outputBasePath),
         #"02_2_yellow_mask": "{0}/02_2_yellow_mask".format(outputBasePath),
         #"03_blur":          "{0}/03_blur".format(outputBasePath),
-        "04_binary":        "{0}/04_binary".format(outputBasePath),
-        "05_closed":        "{0}/05_closed".format(outputBasePath),
-        "06_erode":         "{0}/06_erode".format(outputBasePath),
-        "07_dilated":       "{0}/07_dilated".format(outputBasePath),
+        #"04_binary":        "{0}/04_binary".format(outputBasePath),
+        #"05_closed":        "{0}/05_closed".format(outputBasePath),
+        #"06_erode":         "{0}/06_erode".format(outputBasePath),
+        #"07_dilated":       "{0}/07_dilated".format(outputBasePath),
         "08_signed_img":    "{0}/08_signed_img".format(outputBasePath),
         #"09_sign":          "{0}/09_sign".format(outputBasePath),
     }

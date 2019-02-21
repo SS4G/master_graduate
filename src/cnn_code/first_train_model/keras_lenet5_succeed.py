@@ -15,8 +15,6 @@ from tensorflow.examples.tutorials.mnist import input_data
 from tqdm import tqdm
 import pickle
 
-
-
 def show_levels_of_hdf5(root_h5obj, indent=0, index='/'):
     if hasattr(root_h5obj, 'keys'):
         keys = list(root_h5obj.keys())
@@ -27,7 +25,6 @@ def show_levels_of_hdf5(root_h5obj, indent=0, index='/'):
         print("type :  " + indent * "  " + str(type(root_h5obj)))
         print("value:  " + str(root_h5obj))
         print("index:  " + index)
-
 
 
 #mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)

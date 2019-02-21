@@ -74,11 +74,12 @@ def processImage(imgFile, outputPaths):
     """
     # 二值化门限设定
     BINARY_THRESOLD = 100 # 二值化门限
-    AREA_THRESOLD = 800   # 面积过滤门限
+    AREA_THRESOLD = 100   # 面积过滤门限
     LEFT_SCALE = 0.7      # 比例过滤下限
     RIGHT_SCALE = 1.3     # 比例过滤上限
-    DILATE_ITERATION = 5  # 膨胀操作迭代数
+    DILATE_ITERATION = 1  # 膨胀操作迭代数
     ERODE_ITERATION = 1   # 腐蚀操作迭代数
+    BLUR_KERNAL = (3, 3)
 
     # HSV阈值参数设定
     # HSV值域 H[0,180] s[0, 255] v[0, 255]
@@ -135,7 +136,7 @@ def processImage(imgFile, outputPaths):
     mask_added = mask_added.astype(np.uint8)
 
     #模糊
-    blurred=cv2.blur(mask_added, (9,9))
+    blurred=cv2.blur(mask_added, BLUR_KERNAL)
     #cv2.imwrite("{0}/{1}.jpg".format(outputPaths['03_blur'].rstrip('/'), imgId), blurred)
     #二值化
     ret,binary=cv2.threshold(blurred, BINARY_THRESOLD, 255, cv2.THRESH_BINARY)
@@ -144,7 +145,9 @@ def processImage(imgFile, outputPaths):
     # 使区域闭合无空隙
     # 创建一个闭合空间的算子
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (21, 7))
+    #kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
 
+    #closed = binary
     closed = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
     cv2.imwrite("{0}/{1}.jpg".format(outputPaths['05_closed'].rstrip('/'), imgId), closed)
 
@@ -180,7 +183,7 @@ def processImage(imgFile, outputPaths):
         #在原图画出目标区域
         #cv2.drawContours 参数 (目标图像, 轮廓点集组)
         if width > 0 and height > 0 and LEFT_SCALE < float(height) / width < RIGHT_SCALE and height * width > AREA_THRESOLD:
-            cv2.drawContours(res,[box],-1,(0,0,255),2)
+            cv2.drawContours(res,[box],-1,(0,0,255),1)
         #cv2.drawContours(res, con, -1, (0, 255, 0), 2)
 
     #显示画了标志的原图

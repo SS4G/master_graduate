@@ -1,5 +1,0 @@
-module PoolAddrGen(
-
-);
-
-endmodule

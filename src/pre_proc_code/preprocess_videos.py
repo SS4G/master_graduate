@@ -12,9 +12,9 @@ import master_graduate.src.pre_proc_code.video_split_cat as vsc
 import master_graduate.src.pre_proc_code.preprocess_imgs as primg
 
 if __name__ == "__main__":
-    jobName = "job_redonly_3_{0}".format(dt.datetime.now().strftime("%Y%m%d_%H%M%S"))
-    videoName = "181119_02.mp4"
-    dataPath = "/home/szh-920/workspace/master_graduate/data"          # 所有的数据的根目录
+    jobName = "job_{0}_for_split_normal3".format(dt.datetime.now().strftime("%Y%m%d_%H%M%S"))
+    videoName = "src_1080_video1.mp4"
+    dataPath = "D:/workspace/explain_cnn/master_graduate/data"          # 所有的数据的根目录
     srcVideoFile = "{0}/video_data/source_video/{1}".format(dataPath, videoName)  # 要分析的视频所在的根目录
     #srcVideoFile = "{0}/video_data/source_video/pre_source_1.mp4".format(dataPath)  # 要分析的视频所在的根目录
     srcImagesPath = "{0}/video_frames/{job_name}_src".format(dataPath, job_name=jobName)   # 视频分帧厚度存储目录
@@ -36,11 +36,12 @@ if __name__ == "__main__":
     #开始处理
     #将视频文件处理成图像帧
     vsc.video2Images(srcVideoFile, srcImagesPath, resize=(960, 540))
+    #vsc.video2Images(srcVideoFile, srcImagesPath, resize=(480, 270)) #common30x30
     # 逐帧处理图像
-    primg.processImages(srcImagesPath, outputBasePath=videoOutBasePath, subsample=2)
+    primg.processImages(srcImagesPath, outputBasePath=videoOutBasePath, subsample=None)
     # 将不同的帧分别合并成视频
     for dir in os.listdir(videoOutBasePath):
         ColorLogging.info("merging {0}".format(dir))
         #basename = os.path.basename(dir)
         if "09" not in dir:
-            vsc.images2Video("{0}/{1}".format(videoOutBasePath.rstrip("/"), dir), "{0}/{1}_{2}.avi".format(processedVideoPath, jobName, dir), fps=25)
+            vsc.images2Video("{0}/{1}".format(videoOutBasePath.rstrip("/"), dir), "{0}/{1}_{2}.avi".format(processedVideoPath, jobName, dir), fps=30)

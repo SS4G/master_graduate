@@ -27,14 +27,14 @@ wire [7:0]          din_w;
 reg ping_pong_r;
 reg last_we_r;
 wire [10: 0] wr_addr_w;
-wire [10: 0] rd_addr_w [24: 0];
+wire [11 * 25 - 1: 0] rd_addr_25P_w;
 
 assign wr_addr_w = ping_pong_r? wr_addr_w + 1024: wr_addr; 
 genvar j;
 generate 
-    for (j = 0; j < 25 ;j= j+1)
+    for (j = 0; j < 25 ;j = j + 1)
     begin
-        assign rd_addr_w[32*j + 10: 32*j] = ping_pong_r? rd_addr_25P[32*j + 10: 32*j]: rd_addr_25P[32*j + 10: 32*j] + 1024; 
+        assign rd_addr_25P_w[11 * (j + 1) - 1: 11 * j] =  rd_addr_25P[32*j + 10: 32*j] == ping_pong_r? rd_addr_25P[32*j + 10: 32*j]: rd_addr_25P[32*j + 10: 32*j] + 11'd1024; 
     end
 endgenerate
 
@@ -48,9 +48,9 @@ generate
         blk_mem_8b data_buf (
           .clka(clk),    // input wire clka
           .wea(1'b0),      // input wire [0 : 0] wea
-          .addra(rd_addr_w[32*i + 10: 32*i]),  // input wire [10 : 0] addra
+          .addra(rd_addr_25P_w[11 * (i + 1) - 1: 11 * i]),  // input wire [10 : 0] addra
           .dina(0),    // input wire [7 : 0] dina
-          .douta(dout_w[8*(i+1) - 1: 8*i]),  // output wire [7 : 0] douta
+          .douta(dout_w[8 * (i + 1) - 1: 8 * i]),  // output wire [7 : 0] douta
           .clkb(clk),    // input wire clkb
           .web(we),      // input wire [0 : 0] web
           .addrb(wr_addr_w),  // input wire [10 : 0] addrb
@@ -61,18 +61,18 @@ generate
 endgenerate
 
 
-
 always @(posedge clk or negedge rst_n)
 begin
      if(!rst_n)
      begin
          ping_pong_r <= 0;
+         last_we_r <= 0;
      end
      else
      begin
-         last_we_r <= we;
          if (last_we_r == 1 &&we == 0)
              ping_pong_r <= ~ping_pong_r; //reverse pingpong @ negedge of we
+         last_we_r <= we;
      end     
 end
 endmodule

@@ -12,21 +12,27 @@ module ZedPipline(
    dst_fifo_full
 );
 
+parameter PROCESSS_DELAY_CYCLES = 3000;
+parameter IMG_SIZE = 30 * 30;
+
 input rst_n;
 input s_rst_n;
 input clk;
 
-output src_fifo_rd_en;
+output reg src_fifo_rd_en;
 input [31:0] src_fifo_dout;
 input src_fifo_empty;
 input src_fifo_data_count;
 
    
-output dst_fifo_wr_en;
-output [7:0]dst_fifo_din;
+output reg dst_fifo_wr_en;
+output [7:0] dst_fifo_din;
 input dst_fifo_full;
 
-reg [7: 0] state;
+//状态相关
+reg [7: 0]  state_r;
+reg [31: 0] output_clock_fifo_r [4: 0];
+reg [31:0]  clock_cnt_r;
 
 //地址相关信号
 reg achor_addr_r; //中心锚点的一维偏移地址
@@ -178,5 +184,47 @@ begin
     end 
 end
 
+//clock blk
+always @(posedge clk or negedge rst_n) 
+begin
+    if(!rst_n || !s_rst_n)
+    begin
+        clock_cnt_r <= 0;    
+    end
+    else
+    begin
+        clock_cnt_r <= clock_cnt_r + 1;
+        if (clock_cnt_r == ((32'd1024 << 10) - 1))
+        begin
+            addr_gen_en_r <= 1;
+            clock_cnt_r <= 0;
+        end
+    end
+end
 
+//fifo读取 写入控制
+assign wr_unfinished
+always @(posedge clk or negedge rst_n) 
+begin
+    if(!rst_n || !s_rst_n)
+    begin
+        
+    end
+    else
+    begin
+        //在时间片起始处 1fifo 没有在读取 
+        if(src_fifo_rd_en == 0 && clock_cnt_r[9:0] == 10'd0 && src_fifo_data_count >= IMG_SIZE && !dst_fifo_full)
+        begin
+            src_fifo_rd_en <= 1;
+        end 
+        else if (src_fifo_rd_en && src_fifo_rd_cnt_r < IMG_SIZE)
+        begin
+            src_fifo_rd_cnt_r <= src_fifo_rd_cnt_r + 1; 
+        end
+        else if (src_fifo_rd_en && src_fifo_rd_cnt_r >= IMG_SIZE)
+        begin
+            
+        end        
+    end
+end 
 endmodule

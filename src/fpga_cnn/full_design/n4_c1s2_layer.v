@@ -44,6 +44,11 @@ wire [16*25-1: 0] current_kernel_out_w;
 reg  [16*4-1: 0] pool_buf_r;
 wire [15: 0] pool_out_w; 
 
+reg [15: 0] main_state_r;
+reg [31: 0] kernel_cnt;
+reg data_from_calc_valid;
+reg [16: 0] data_from_calc_valid_cnt;
+
 AddrGen addr_inst(
     .rst_n(rst_n),
     .clk(clk),
@@ -78,4 +83,49 @@ MaxValue4P pool_inst(
 );
 
 
+
+
+always @(posedge clk or negedge rst_n)
+begin
+    if (!rst_n)
+    begin
+    
+    end 
+    else
+    begin 
+        case (state)
+        IDLE:
+        begin
+            if (layer_en_i)
+            begin
+                addr_gen_en_r <= 1;
+            end 
+        end 
+        READY:
+        begin
+        
+        end
+        RUNNING:
+        begin
+        
+        end 
+        FINISHED:
+        begin
+        
+        end 
+        default:
+    end
+end
 endmodule 
+
+
+
+
+
+
+
+
+
+
+
+

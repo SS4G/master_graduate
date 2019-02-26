@@ -9,8 +9,8 @@ module AddrGen(
 input rst_n;
 input clk;
 input en;
-output [32 * 25 - 1: 0] addr_out_25P;
 output [31: 0] anchor_addr;
+output [32 * 25 - 1: 0] addr_out_25P;
 
 parameter H_WINDOW_LEN = 5; //窗口横向长度
 parameter V_WINDOW_LEN = 5; //窗口纵向长度
@@ -18,6 +18,7 @@ parameter H_IMAGE_LEN = 30; //图像横向长()
 parameter V_IMAGE_LEN = 30;
 
 reg [31:0]  clk_cnt;
+wire [32 * 25 - 1: 0] addr_out_25P_w;
 
 genvar h_offset;   // 相对与锚点的横向偏移
 genvar v_offset;   // 相对于锚点的纵向偏移
@@ -26,8 +27,8 @@ for (v_offset = 0; v_offset < V_WINDOW_LEN ; v_offset = v_offset + 1)
 begin
     for (h_offset = 0; h_offset < H_WINDOW_LEN; h_offset = h_offset + 1) 
     begin
-        assign addr_out_25P[32 * (h_offset * H_WINDOW_LEN + v_offset + 1) - 1: 32 * (h_offset * H_WINDOW_LEN + v_offset)] = anchor_addr + h_offset + v_offset * H_IMAGE_LEN;
-        //assign addr_out_25P[32 * 11 - 1, 32 * 10] = anchor_addr + h_offset + v_offset * H_IMAGE_LEN;
+        assign addr_out_25P_w[32 * (h_offset * H_WINDOW_LEN + v_offset + 1) - 1: 32 * (h_offset * H_WINDOW_LEN + v_offset)] = anchor_addr + h_offset + v_offset * H_IMAGE_LEN;
+        assign addr_out_25P[32 * (h_offset * H_WINDOW_LEN + v_offset + 1) - 1: 32 * (h_offset * H_WINDOW_LEN + v_offset)] = addr_out_25P_w[32 * (h_offset * H_WINDOW_LEN + v_offset + 1) - 1: 32 * (h_offset * H_WINDOW_LEN + v_offset)] > 20 ? addr_out_25P_w[32 * (h_offset * H_WINDOW_LEN + v_offset + 1) - 1: 32 * (h_offset * H_WINDOW_LEN + v_offset)] : 0 ;
     end 
 end
 endgenerate 

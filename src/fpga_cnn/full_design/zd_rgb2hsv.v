@@ -68,7 +68,7 @@ input [7: 0] din_r;
 input [7: 0] din_g;
 input [7: 0] din_b;
 
-output [7: 0] dout_h;
+output reg [7: 0] dout_h;
 output [7: 0] dout_s;
 output [7: 0] dout_v;
 
@@ -78,6 +78,7 @@ wire [7:0] c_min;
 reg [8: 0] h_up_r; //计算H时选择的分子 (G-B) (B-R) (R-G) 等 
 
 reg [7: 0] dout_h_r; //加上颜色偏移的h
+reg [15 : 0] h_up_r_30_r; 
 wire [7: 0] cmin;
 wire [7: 0] cmax;
 wire [7: 0] delta;  //max - min
@@ -86,9 +87,9 @@ wire max_is_g;
 wire max_is_b;
 
 assign delta = c_max - cmin;
-assign dout_h_w = delta == 0 ? 0 : h_up_r * 30 / delta;
+assign dout_h_w = delta == 0 ? 0 : h_up_r_30_r / delta;
 
-assign dout_h = dout_h_r;
+//assign dout_h = dout_h_r;
 assign dout_s = cmax == 0 ? 0 : delta * 255; 
 assign dout_v = cmax;
 
@@ -127,7 +128,24 @@ begin
         dout_h_r = dout_h_w;
     else if (max_is_g)
         dout_h_r = dout_h_w + 60;
-    else
+    else if (max_is_b)
         dout_h_r = dout_h_w + 120;
+    else
+        dout_h_r = 0; 
 end
+
+always @(posedge clk)
+begin
+    if (!rst_n)
+    begin
+        h_up_r_30_r<=0;
+        dout_h <= 0;
+    end
+    else
+    begin 
+       h_up_r_30_r <=  h_up_r * 30;
+       dout_h <= dout_h_r;
+    end
+end
+
 endmodule

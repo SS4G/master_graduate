@@ -314,6 +314,9 @@ class FixPointNum:
     def getFloatVal(self):
         return self.fixValue / (2 ** self.pointBits)
 
+    def getFixVal(self):
+        return self.fixValue
+
     def __repr__(self):
         #return "{0} Bin:{1}.{2}, Fix:{3}".format(self.getFloatVal(), self.binstr[:self.intBits], self.binstr[self.intBits:], self.fixValue)
         return "{0}".format(self.getFloatVal())

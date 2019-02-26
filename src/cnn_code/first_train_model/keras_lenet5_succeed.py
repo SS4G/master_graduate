@@ -38,7 +38,7 @@ ACT_FUNC = 'tanh'#'sigmoid'#'relu'#'tanh'
 
 # #### 标准的形式 x_trainReshaped.shape (55000, 28, 28, 1) amount height width channel
 
-names = pd.read_csv("unstandard_file.csv")
+names = pd.read_csv("./data/unstandard_file.csv")
 blacklistSet = names["Filename"]
 
 notype = {22,36,40,20,21, 39, 24,  29,   32,   42,   41,   27,   37,   19,   0}

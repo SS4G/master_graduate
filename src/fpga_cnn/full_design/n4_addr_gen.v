@@ -4,8 +4,7 @@ module AddrGen(
     en,
     pause,
     addr_out_25P,
-    anchor_addr_in,
-    rom_addr_out
+    anchor_addr_in
 );
 
 input rst_n;
@@ -13,14 +12,13 @@ input clk;
 input en;
 input pause;
 input  [31: 0] anchor_addr_in; //将外部Rom中记录的锚点输入
-output [31: 0] rom_addr_out; //向外部记录锚点的Rom输出时钟偏移
 
 output [32 * 25 - 1: 0] addr_out_25P;
 
 parameter H_WINDOW_LEN = 5; //窗口横向长度
 parameter V_WINDOW_LEN = 5; //窗口纵向长度
-parameter H_IMAGE_LEN = 30; //图像横向长()
-parameter V_IMAGE_LEN = 30;
+parameter H_IMAGE_LEN = 35; //图像横向长()
+parameter V_IMAGE_LEN = 35;
 
 reg [31:0]  clk_cnt;
 
@@ -44,25 +42,4 @@ endgenerate
 //依靠内部的coefile制定锚点
 //通过不同的coefile配置 生成不同的路径
 
-assign rom_addr_out = clk_cnt;
-
-always @(posedge clk or negedge rst_n) 
-begin
-    if(!rst_n)
-    begin
-        clk_cnt <= 0;
-    end
-    else
-    begin
-        if (en)
-        begin
-            if(clk_cnt >= (H_IMAGE_LEN - H_WINDOW_LEN + 1) * (V_IMAGE_LEN - V_WINDOW_LEN + 1) - 1)
-                clk_cnt <= 0;
-            else
-                clk_cnt <= clk_cnt + 1;
-        end
-        else if(!pause)
-            clk_cnt <= 0;
-    end
-end
 endmodule 

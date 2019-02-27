@@ -1,4 +1,4 @@
-module C1S2_layer(
+module C3S4_layer(
 
 clk,
 rst_n,
@@ -6,7 +6,13 @@ rst_n,
 en,
 work_finished,
 
-rd_data_in_5P,
+rd_data_in_5P_0,
+rd_data_in_5P_1,
+rd_data_in_5P_2,
+rd_data_in_5P_3,
+rd_data_in_5P_4,
+rd_data_in_5P_5,
+
 rd_addr_out_5P,
 
 wr_addr_out_1P,
@@ -15,10 +21,11 @@ wr_data_out_1P,
 wr_out_en 
 );
 
-parameter FIN_ROM_ADDR = 900; //30x30
-parameter KERNEL_NUM = 6;
-parameter RES_KERNEL_OFFSET = 256; //输出的featuremap对应的 内存段偏移
-parameter OUTPUT_FIN_ROM_ADDR = 225; //15x15
+parameter FIN_ROM_ADDR = 100; //10x10
+parameter KERNEL_NUM = 16;
+parameter FEATURE_MAP_NUM = 6;
+parameter RES_KERNEL_OFFSET = 25; //输出的featuremap对应的 内存段偏移
+parameter OUTPUT_FIN_ROM_ADDR = 25; //5x5
 
 //尽量使用局部状态机
 parameter IDLE = "IDLE";//31'h0; 
@@ -28,12 +35,17 @@ parameter FINISHED = "FINISHED";//31'h2;
 
 input  clk;
 input  rst_n;
-wire [31:0] wr_arr [3:0];
+
 input  en;
 output reg work_finished;
 
 //读取缓存相关
-input  [5*16-1:0] rd_data_in_5P;
+input  [5*16-1:0] rd_data_in_5P_0;
+input  [5*16-1:0] rd_data_in_5P_1;
+input  [5*16-1:0] rd_data_in_5P_2;
+input  [5*16-1:0] rd_data_in_5P_3;
+input  [5*16-1:0] rd_data_in_5P_4;
+input  [5*16-1:0] rd_data_in_5P_5;
 output [5*32-1:0] rd_addr_out_5P;
 
 //外部缓存输出
@@ -44,6 +56,14 @@ output wr_out_en;
 
 //reg [31:0] main_state;
 reg [8*8-1:0] main_state;
+
+//初始化RAM所用
+reg [8:0] kernel_ram_addr;        // input wire [8 : 0] a
+reg [399:0] kernel_ram_data;
+
+//
+wire [5*16-1:0] rd_data_in_5P [FEATURE_MAP_NUM-1: 0];
+
 
 //anchor rom 相关
 reg  [31:0] anchor_perido_cnt;
@@ -73,20 +93,28 @@ wire [15: 0] inner_product_out;
 wire [15: 0] relu_out;
 wire data_buf25_change;
 
+
+
 //kernel bias_idx
-reg [7:0] kernel_bias_idx; //选择对应的kernel和bias
-wire [16*25-1: 0] kernel_out;
-wire [15: 0] bias_out;
+reg [7:0] kernel_bias_idx [FEATURE_MAP_NUM-1:0]; //选择对应的kernel和bias
+wire [16*25-1: 0] kernel_out [FEATURE_MAP_NUM-1:0];
+wire [15: 0] bias_out [FEATURE_MAP_NUM-1:0];
 reg kernel_calculating_pulse;
 wire kernel_calculating_delay_pulse; //和数据在计算元件中流动的速度一致
 wire relu_out_valid;//同上
+
+wire [15: 0] sum_0123;
+wire [15: 0] sum_45;
+reg [15: 0] sum0123_sync;
+reg [15: 0] sum45_sync;
+wire [15: 0] total_sum;
 
 //pool buffers[]
 reg  [7: 0]  pool_buffer_idx; //记录是哪个kernel的poolBuffer
 reg  [7: 0]  pool_buffer_cnt [KERNEL_NUM-1:0]; //记录某个kernel的pool buffer中被填充了第几个数字
 reg  [16 * 4 - 1: 0] pool_buffer_mem [KERNEL_NUM-1:0]; //暂时存储pool数据的 
 wire [16 * KERNEL_NUM - 1: 0] pool_out;
-wire  [KERNEL_NUM-1: 0] pool_out_valid;//当对应pool输出有效值是 该位置位
+wire [KERNEL_NUM-1: 0] pool_out_valid;//当对应pool输出有效值是 该位置位
 reg st_flag;
 //输出逻辑控制
 reg wr_out_en_r;
@@ -97,19 +125,17 @@ reg  output_flag;
 reg st_flag;
 
 assign wr_out_en = wr_out_en_r;
-assign anchor_addr[31:16] = 0;
-c1s2_layer_anchor_rom c1s2_anchor_rom (
+c3s4_layer_anchor_rom c3s4_anchor_rom (
   .clka(clk),    // input wire clka
   .addra(anchor_rom_addr),  // input wire [9 : 0] addra
-  .douta(anchor_addr)  // output wire [15 : 0] douta
+  .douta(anchor_addr)  // output wire [399 : 0] douta
 );
 
 assign data_buf25_0_w = {data_buf25_0_r[4], data_buf25_0_r[3], data_buf25_0_r[2], data_buf25_0_r[1], data_buf25_0_r[0]};
 assign data_buf25_1_w = {data_buf25_1_r[4], data_buf25_1_r[3], data_buf25_1_r[2], data_buf25_1_r[1], data_buf25_1_r[0]};
-
 assign data_buf25 = data_buf25_switch == 0 ? data_buf25_0_w : data_buf25_1_w;
 
-AddrGen #(.H_IMAGE_LEN(35), .V_IMAGE_LEN(35)) addr_gen_inst(
+AddrGen #(.H_IMAGE_LEN(15), .V_IMAGE_LEN(15)) addr_gen_inst(
     .rst_n(rst_n),
     .clk(clk),
     .en(en),
@@ -120,31 +146,78 @@ AddrGen #(.H_IMAGE_LEN(35), .V_IMAGE_LEN(35)) addr_gen_inst(
 
 //delay 6 cycles 
 //inner_product and relu 
-assign relu_out = inner_product_out[15] == 0 ? inner_product_out : 0;
-InnerProduct_25P inner_product_inst(
-    .clk(clk),
-    .bias(bias_out),
-    .in_vecA_25P(kernel_out),
-    .in_vecB_25P(data_buf25_delay),
-    .out_1P(inner_product_out)
-);
+assign relu_out = summed_inner_product_out[15] == 0 ? summed_inner_product_out : 0;
 
-C1_bias C1_bias_inst (
+C3_bias C3_bias_inst(
   .clka(clk),    // input wire clka
   .addra(kernel_bias_idx),  // input wire [2 : 0] addra
   .douta(bias_out)  // output wire [15 : 0] douta
 );
 
-C1_kernal C1_Kernel_inst(
+
+C3_kernal C3_Kernel_inst(
   .clka(clk),    // input wire clka
-  .addra(kernel_bias_idx),  // input wire [2 : 0] addra
+  .addra(kernel_bias_idx_0),  // input wire [2 : 0] addra
   .douta(kernel_out)  // output wire [399 : 0] douta
 );
 
-//延迟信号和计算值流动的一致
-Delay #(.WIDTH(16), .DELAY_CYCLE(6)) Delay_instx( 
+ 
+assign sum_0123 = (inner_product_out[0] + inner_product_out[1]) + (inner_product_out[2] + inner_product_out[3]);
+assign sum_45 = (inner_product_out[4] + inner_product_out[5])
+
+assign total_sum = sum0123_sync + sum45_sync;
+assign relu_out = total_sum[15] == 1'b1 ? 0 : total_sum;
+always @(posedge clk or negedge rst_n)
+begin
+    sum0123_sync <= sum_0123;
+    sum45_sync <= sum_45;
+end 
+
+    
+//sub_inst_1
+genvar sub_inst_idx;
+
+assign rd_data_in_5P[0] = rd_data_in_5P_0;
+assign rd_data_in_5P[1] = rd_data_in_5P_1;
+assign rd_data_in_5P[2] = rd_data_in_5P_2;
+assign rd_data_in_5P[3] = rd_data_in_5P_3;
+assign rd_data_in_5P[4] = rd_data_in_5P_4;
+assign rd_data_in_5P[5] = rd_data_in_5P_5;
+
+generate
+for (sub_inst_idx = 0; sub_inst_idx < FEATURE_MAP_NUM; sub_inst_idx = sub_inst_idx + 1)
+begin 
+
+C3_kernel_ram kernel_inst (
+  .a(kernel_ram_addr),        // input wire [8 : 0] a
+  .d(kernel_ram_data),        // input wire [399 : 0] d
+  .clk(clk),    // input wire clk
+  .we(kernel_inst_we[sub_inst_idx]),      // input wire we
+  .dpra(kernel_bias_idx[sub_inst_idx]),  // input wire [8 : 0] dpra
+  .dpo(kernel_out[sub_inst_idx])    // output wire [399 : 0] dpo
+);
+
+C3_sub_module C3_sub_inst(
     .clk(clk),
-    .din(kernel_calculating_pulse),
+    .rst_n(rst_n),
+    .anchor_rom_output_valid(anchor_rom_output_valid),
+    .addr_out_25P_w(addr_out_25P_w),
+    .bias_out(bias_out),
+    .kernel_out(kernel_out[sub_inst_idx]),
+    .rd_data_in_5P(rd_data_in_5P[sub_inst_idx]),
+
+    .inner_product_out(inner_product_out[sub_inst_idx]),
+    .kernel_bias_idx(kernel_bias_idx[sub_inst_idx]),
+    .kernel_calculating_pulse(kernel_calculating_pulse[sub_inst_idx])
+);
+end 
+endgenerate
+
+
+//延迟信号和计算值流动的一致
+Delay #(.WIDTH(16), .DELAY_CYCLE(7)) Delay_instx( 
+    .clk(clk),
+    .din(kernel_calculating_pulse[0]),
     .dout(kernel_calculating_delay_pulse)    
 );
 
@@ -200,105 +273,9 @@ end
 
 //读取地址分发
 assign  anchor_rom_output_valid = anchor_perido_cnt == 1;
-assign  rd_addr_out_5P = addr_out_idx != 5 ? addr_out_5P_r[addr_out_idx] : 'bz;
-assign  data_buf25_change = addr_out_idx == 5; //表明下个周期将发生改变
-assign  rd_data_in_valid = addr_out_idx != 0;
-always @(posedge clk or negedge rst_n)
-begin
-    if(!rst_n)
-    begin 
-        //data_in_ready <= 0;
-        //rd_data_in_valid <= 0;        
-        addr_out_idx <= 0;
-    end
-    else
-    begin 
-        if (anchor_rom_output_valid)
-        begin
-            addr_out_idx <= 0;
-            {addr_out_5P_r[4], addr_out_5P_r[3], addr_out_5P_r[2], addr_out_5P_r[1], addr_out_5P_r[0]} <= addr_out_25P_w;
-        end
-        else
-        begin
-            /*
-            if (addr_out_idx == 0)
-            begin
-               rd_data_in_valid <= 1;
-            end
-            else if (addr_out_idx == 5)
-            begin
-               rd_data_in_valid <= 0;
-            end       
-            else*/
-            addr_out_idx <= addr_out_idx + 1;
-        end
-    end 
-end
 
-//读取数据拼装逻辑 将1x5的读取数据拼装成5x5的数据
-integer p1;
-always @(posedge clk or negedge rst_n)
-begin
-    if (!rst_n)
-    begin
-       data_in_idx <= 0;
-       data_buf25_switch <= 0;
-       for (p1 = 0; p1 < 5; p1 = p1 + 1)
-       begin
-           data_buf25_1_r[p1] <= 96'hffffffff_ffffffff_ffffffff;
-           data_buf25_0_r[p1] <= 96'hffffffff_ffffffff_ffffffff;
-       end 
-    end
-    else
-    begin
-        if (rd_data_in_valid)
-        begin
-           if (!data_buf25_switch)
-           begin
-                data_buf25_1_r[data_in_idx] <= rd_data_in_5P;
-                data_in_idx <= data_in_idx + 1;
-           end
-           else
-           begin
-                data_buf25_0_r[data_in_idx] <= rd_data_in_5P;
-                data_in_idx <= data_in_idx + 1;
-           end
-           
-           if (data_in_idx == 4)
-           begin
-               data_buf25_switch <= ~data_buf25_switch; //翻转数据选择
-               
-           end 
-        end
-        else
-            data_in_idx <= 0;
-    end
-end
 
-//kernel bias 切换逻辑
-//kernel_calculating 为高表示 数据下个周期已经进入到了加法器和乘法器中 
-//kernel_calculating 变低表示当前数据总线上的数据是无效的
-always @(posedge clk or negedge rst_n)
-begin 
-    if(!rst_n)
-    begin
-        kernel_bias_idx <= 0;
-        kernel_calculating_pulse <= 0;
-    end
-    else
-    begin
-        if (data_buf25_change)// data_buf_数据将在该周期改变
-        begin
-            kernel_bias_idx <= 0;
-        end     
-        else
-        begin
-            kernel_bias_idx <= kernel_bias_idx + 1;
-        end
-        kernel_calculating_pulse <= data_buf25_change;     
-        data_buf25_delay <= data_buf25;
-    end 
-end
+
 
 //pool 数据缓存逻辑
 assign relu_out_ready = kernel_calculating_delay_pulse;

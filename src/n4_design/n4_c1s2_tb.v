@@ -19,6 +19,16 @@ wire [31:0] rd_addr_out3;
 wire [31:0] rd_addr_out4;
 wire [31:0] rd_addr_out5;
 
+reg en;
+
+Total_Sys DUT(
+    .clk(clk),
+    .rst_n(rst_n),
+    .din(din),
+    .wr_addr(din),
+    .we(we),
+    .en(en)
+);
 
 always #5 clk = ~clk;
 
@@ -42,10 +52,11 @@ begin
     begin
         @(posedge clk)
         din <= i + 10000;
-        wr_addr <= i;
+        dindindin <= i;
     end
     #1;
     we = 0;
+    en = 1;
     for (k = 0; k < 1; k= k +1)
     begin 
         #1000;
@@ -78,6 +89,7 @@ assign a2 = rd_addr_5P_r[32*(2 + 1):2*32];
 assign a3 = rd_addr_5P_r[32*(3 + 1):3*32];
 assign a4 = rd_addr_5P_r[32*(4 + 1):4*32];
 
+/*
 genvar p;
 generate 
     for (p = 0; p < 5; p = p + 1)
@@ -98,6 +110,7 @@ generate
         );
     end
 endgenerate
+*/
 
 assign rd_addr_out0 = rd_addr_5P_w[(1 + 1)*32-1: 0*32];
 assign rd_addr_out1 = rd_addr_5P_w[(2 + 1)*32-1: 1*32];

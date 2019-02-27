@@ -46,7 +46,7 @@ begin
     end
     #1;
     we = 0;
-    for (k = 0; k < 3; k= k +1)
+    for (k = 0; k < 1; k= k +1)
     begin 
         #1000;
         layer_c1s2_en = 1;

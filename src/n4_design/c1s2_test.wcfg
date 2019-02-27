@@ -11,19 +11,29 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="1236000001fs"></ZoomEndTime>
-      <Cursor1Time time="1000000000fs"></Cursor1Time>
+      <ZoomStartTime time="129841919000fs"></ZoomStartTime>
+      <ZoomEndTime time="131313919001fs"></ZoomEndTime>
+      <Cursor1Time time="130439919000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="233"></NameColumnWidth>
-      <ValueColumnWidth column_width="197"></ValueColumnWidth>
+      <NameColumnWidth column_width="222"></NameColumnWidth>
+      <ValueColumnWidth column_width="109"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="15" />
+   <WVObjectSize size="16" />
    <wave_markers>
-      <marker time="62645000000" label="" />
-      <marker time="62705000000" label="" />
-      <marker time="62715100000" label="" />
+      <marker time="76995100000" label="" />
+      <marker time="144525000000" label="" />
+      <marker time="144465000000" label="" />
+      <marker time="82895000000" label="" />
+      <marker time="82955100000" label="" />
+      <marker time="78695000000" label="" />
+      <marker time="78755000000" label="" />
+      <marker time="78815000000" label="" />
+      <marker time="62734740000" label="" />
+      <marker time="65215000000" label="" />
+      <marker time="62795000000" label="" />
+      <marker time="62985000000" label="" />
+      <marker time="63165000000" label="" />
    </wave_markers>
    <wvobject fp_name="/n4_c1s2_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
@@ -41,13 +51,21 @@
       <obj_property name="ElementShortName">en</obj_property>
       <obj_property name="ObjectShortName">en</obj_property>
    </wvobject>
-   <wvobject fp_name="/n4_c1s2_tb/DUT/anchor_addr" type="array">
-      <obj_property name="ElementShortName">anchor_addr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">anchor_addr[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/n4_c1s2_tb/DUT/anchor_rom_en" type="logic">
-      <obj_property name="ElementShortName">anchor_rom_en</obj_property>
-      <obj_property name="ObjectShortName">anchor_rom_en</obj_property>
+   <wvobject fp_name="group1136" type="group">
+      <obj_property name="label">anchor_rom_grp</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/anchor_rom_addr" type="array">
+         <obj_property name="ElementShortName">anchor_rom_addr[31:0]</obj_property>
+         <obj_property name="ObjectShortName">anchor_rom_addr[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/anchor_rom_en" type="logic">
+         <obj_property name="ElementShortName">anchor_rom_en</obj_property>
+         <obj_property name="ObjectShortName">anchor_rom_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/anchor_addr" type="array">
+         <obj_property name="ElementShortName">anchor_addr[31:0]</obj_property>
+         <obj_property name="ObjectShortName">anchor_addr[31:0]</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="/n4_c1s2_tb/DUT/anchor_perido_cnt" type="array">
       <obj_property name="ElementShortName">anchor_perido_cnt[31:0]</obj_property>
@@ -55,51 +73,619 @@
       <obj_property name="CustomSignalColor">#FF0080</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject fp_name="/n4_c1s2_tb/DUT/anchor_rom_addr" type="array">
-      <obj_property name="ElementShortName">anchor_rom_addr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">anchor_rom_addr[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/n4_c1s2_tb/DUT/work_finished" type="logic">
-      <obj_property name="ElementShortName">work_finished</obj_property>
-      <obj_property name="ObjectShortName">work_finished</obj_property>
-   </wvobject>
    <wvobject fp_name="/n4_c1s2_tb/DUT/main_state" type="array">
       <obj_property name="ElementShortName">main_state[63:0]</obj_property>
       <obj_property name="ObjectShortName">main_state[63:0]</obj_property>
       <obj_property name="Radix">ASCIIRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="group267" type="group">
-      <obj_property name="label">kernel_bias</obj_property>
+   <wvobject fp_name="group1570" type="group">
+      <obj_property name="label">inner_in_grp</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/n4_c1s2_tb/DUT/kernel_bias_idx" type="array">
-         <obj_property name="ElementShortName">kernel_bias_idx[7:0]</obj_property>
-         <obj_property name="ObjectShortName">kernel_bias_idx[7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/n4_c1s2_tb/DUT/bias_out" type="array">
-         <obj_property name="ElementShortName">bias_out[15:0]</obj_property>
-         <obj_property name="ObjectShortName">bias_out[15:0]</obj_property>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/kernel_calculating_pulse" type="logic">
+         <obj_property name="ElementShortName">kernel_calculating_pulse</obj_property>
+         <obj_property name="ObjectShortName">kernel_calculating_pulse</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/n4_c1s2_tb/DUT/kernel_out" type="array">
          <obj_property name="ElementShortName">kernel_out[399:0]</obj_property>
          <obj_property name="ObjectShortName">kernel_out[399:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/data_buf25_delay" type="array">
+         <obj_property name="ElementShortName">data_buf25_delay[399:0]</obj_property>
+         <obj_property name="ObjectShortName">data_buf25_delay[399:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/bias_out" type="array">
+         <obj_property name="ElementShortName">bias_out[15:0]</obj_property>
+         <obj_property name="ObjectShortName">bias_out[15:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="/n4_c1s2_tb/DUT/addr_out_25P_w" type="array">
-      <obj_property name="ElementShortName">addr_out_25P_w[799:0]</obj_property>
-      <obj_property name="ObjectShortName">addr_out_25P_w[799:0]</obj_property>
-      <obj_property name="CustomSignalColor">#FFD700</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
+   <wvobject fp_name="group1559" type="group">
+      <obj_property name="label">relu_pool_grp</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/relu_out" type="array">
+         <obj_property name="ElementShortName">relu_out[15:0]</obj_property>
+         <obj_property name="ObjectShortName">relu_out[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/pool_buffer_idx" type="array">
+         <obj_property name="ElementShortName">pool_buffer_idx[7:0]</obj_property>
+         <obj_property name="ObjectShortName">pool_buffer_idx[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/relu_out_ready" type="logic">
+         <obj_property name="ElementShortName">relu_out_ready</obj_property>
+         <obj_property name="ObjectShortName">relu_out_ready</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/pool_buffer_mem" type="array">
+         <obj_property name="ElementShortName">pool_buffer_mem[5:0][63:0]</obj_property>
+         <obj_property name="ObjectShortName">pool_buffer_mem[5:0][63:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/pool_out" type="array">
+         <obj_property name="ElementShortName">pool_out[95:0]</obj_property>
+         <obj_property name="ObjectShortName">pool_out[95:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/inner_product_out" type="array">
+         <obj_property name="ElementShortName">inner_product_out[15:0]</obj_property>
+         <obj_property name="ObjectShortName">inner_product_out[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/pool_buffer_cnt" type="array">
+         <obj_property name="ElementShortName">pool_buffer_cnt[5:0][7:0]</obj_property>
+         <obj_property name="ObjectShortName">pool_buffer_cnt[5:0][7:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/pool_out_valid" type="array">
+         <obj_property name="ElementShortName">pool_out_valid[5:0]</obj_property>
+         <obj_property name="ObjectShortName">pool_out_valid[5:0]</obj_property>
+      </wvobject>
    </wvobject>
-   <wvobject fp_name="/n4_c1s2_tb/rd_addr_5P_r" type="array">
-      <obj_property name="ElementShortName">rd_addr_5P_r[159:0]</obj_property>
-      <obj_property name="ObjectShortName">rd_addr_5P_r[159:0]</obj_property>
+   <wvobject fp_name="group1603" type="group">
+      <obj_property name="label">data_buf_25_delay</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_00" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_00[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_00[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_01" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_01[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_01[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_02" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_02[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_02[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_03" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_03[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_03[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_04" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_04[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_04[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_05" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_05[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_05[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_06" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_06[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_06[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_07" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_07[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_07[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_08" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_08[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_08[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_09" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_09[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_09[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_10" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_10[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_10[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_11" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_11[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_11[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_12" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_12[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_12[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_13" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_13[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_13[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_14" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_14[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_14[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_15" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_15[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_15[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_16" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_16[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_16[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_17" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_17[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_17[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_18" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_18[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_18[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_19" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_19[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_19[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_20" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_20[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_20[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_21" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_21[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_21[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_22" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_22[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_22[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_23" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_23[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_23[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_24" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_24[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_24[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_data_buf25_delay_25" type="array">
+         <obj_property name="ElementShortName">debug_data_buf25_delay_25[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_data_buf25_delay_25[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
    </wvobject>
-   <wvobject fp_name="/n4_c1s2_tb/DUT/rd_addr_out_5P" type="array">
-      <obj_property name="ElementShortName">rd_addr_out_5P[159:0]</obj_property>
-      <obj_property name="ObjectShortName">rd_addr_out_5P[159:0]</obj_property>
+   <wvobject fp_name="group1782" type="group">
+      <obj_property name="label">wr_data_1Pin</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/mux_inst/in_00" type="array">
+         <obj_property name="ElementShortName">in_00[15:0]</obj_property>
+         <obj_property name="ObjectShortName">in_00[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/mux_inst/in_01" type="array">
+         <obj_property name="ElementShortName">in_01[15:0]</obj_property>
+         <obj_property name="ObjectShortName">in_01[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/mux_inst/in_02" type="array">
+         <obj_property name="ElementShortName">in_02[15:0]</obj_property>
+         <obj_property name="ObjectShortName">in_02[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/mux_inst/in_03" type="array">
+         <obj_property name="ElementShortName">in_03[15:0]</obj_property>
+         <obj_property name="ObjectShortName">in_03[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/mux_inst/in_04" type="array">
+         <obj_property name="ElementShortName">in_04[15:0]</obj_property>
+         <obj_property name="ObjectShortName">in_04[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/mux_inst/in_05" type="array">
+         <obj_property name="ElementShortName">in_05[15:0]</obj_property>
+         <obj_property name="ObjectShortName">in_05[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
    </wvobject>
-   <wvobject fp_name="/n4_c1s2_tb/DUT/addr_out_5P_r" type="array">
-      <obj_property name="ElementShortName">addr_out_5P_r[4:0][159:0]</obj_property>
-      <obj_property name="ObjectShortName">addr_out_5P_r[4:0][159:0]</obj_property>
+   <wvobject fp_name="group1684" type="group">
+      <obj_property name="label">kernel_out_grp</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_00" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_00[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_00[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_01" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_01[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_01[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_02" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_02[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_02[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_03" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_03[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_03[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_04" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_04[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_04[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_05" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_05[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_05[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_06" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_06[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_06[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_07" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_07[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_07[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_08" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_08[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_08[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_09" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_09[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_09[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_10" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_10[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_10[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_11" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_11[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_11[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_12" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_12[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_12[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_13" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_13[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_13[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_14" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_14[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_14[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_15" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_15[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_15[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_16" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_16[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_16[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_17" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_17[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_17[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_18" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_18[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_18[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_19" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_19[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_19[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_20" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_20[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_20[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_21" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_21[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_21[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_22" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_22[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_22[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_23" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_23[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_23[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_24" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_24[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_24[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/debug_kernel_out_25" type="array">
+         <obj_property name="ElementShortName">debug_kernel_out_25[15:0]</obj_property>
+         <obj_property name="ObjectShortName">debug_kernel_out_25[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/n4_c1s2_tb/DUT/st_flag" type="logic">
+      <obj_property name="ElementShortName">st_flag</obj_property>
+      <obj_property name="ObjectShortName">st_flag</obj_property>
+   </wvobject>
+   <wvobject fp_name="group1811" type="group">
+      <obj_property name="label">output_grp</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/anchor_out_addr" type="array">
+         <obj_property name="ElementShortName">anchor_out_addr[31:0]</obj_property>
+         <obj_property name="ObjectShortName">anchor_out_addr[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/kernel_offset" type="array">
+         <obj_property name="ElementShortName">kernel_offset[31:0]</obj_property>
+         <obj_property name="ObjectShortName">kernel_offset[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/wr_out_en" type="logic">
+         <obj_property name="ElementShortName">wr_out_en</obj_property>
+         <obj_property name="ObjectShortName">wr_out_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/wr_data_out_1P" type="array">
+         <obj_property name="ElementShortName">wr_data_out_1P[15:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data_out_1P[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">8</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/wr_addr_out_1P" type="array">
+         <obj_property name="ElementShortName">wr_addr_out_1P[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_addr_out_1P[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/pool_out_valid" type="array">
+         <obj_property name="ElementShortName">pool_out_valid[5:0]</obj_property>
+         <obj_property name="ObjectShortName">pool_out_valid[5:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/n4_c1s2_tb/DUT/pool_out_kernel_idx" type="array">
+         <obj_property name="ElementShortName">pool_out_kernel_idx[7:0]</obj_property>
+         <obj_property name="ObjectShortName">pool_out_kernel_idx[7:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/n4_c1s2_tb/DUT/output_flag" type="logic">
+      <obj_property name="ElementShortName">output_flag</obj_property>
+      <obj_property name="ObjectShortName">output_flag</obj_property>
+   </wvobject>
+   <wvobject fp_name="/n4_c1s2_tb/DUT/mux_inst/output_data" type="array">
+      <obj_property name="ElementShortName">output_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">output_data[15:0]</obj_property>
    </wvobject>
 </wave_config>

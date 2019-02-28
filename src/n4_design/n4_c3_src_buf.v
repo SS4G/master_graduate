@@ -11,7 +11,7 @@ input clk;
 input  [32*5-1:0] rd_addr_5P;
 output [16*5-1:0] rd_data_5P;
 input [15:0] wr_data;
-input [31:0] wr_addr;
+input [7:0] wr_addr;
 input we;
 
 genvar p;
@@ -23,9 +23,9 @@ generate
         blk_mem_16b_256B data_buf (
           .clka(clk),    // input wire clka
           .wea(1'b0),      // input wire [0 : 0] wea
-          .addra(rd_addr_5P[32 * (p + 1): 32 * p]),  // input wire [10 : 0] addra
+          .addra(rd_addr_5P[32 * (p + 1)-1: 32 * p]),  // input wire [10 : 0] addra
           .dina(0),    // input wire [7 : 0] dina
-          .douta(rd_data_5P[16 * (p + 1): 16 * p]),  // output wire [7 : 0] douta
+          .douta(rd_data_5P[16 * (p + 1)-1: 16 * p]),  // output wire [7 : 0] douta
           .clkb(clk),    // input wire clkb
           .web(we),      // input wire [0 : 0] web
           .addrb(wr_addr),  // input wire [10 : 0] addrb
@@ -108,25 +108,25 @@ DEMUX1_10 #(.WIDTH(16)) demux_data_inst(
     .out_03(wr_data_3),
     .out_04(wr_data_4),
     .out_05(wr_data_5),
-    .out_06(0),
-    .out_07(0),
-    .out_08(0),
-    .out_09(0)
+    .out_06(),
+    .out_07(),
+    .out_08(),
+    .out_09()
 );
 
 DEMUX1_10 #(.WIDTH(8)) demux_addr_inst(
     .select(buf_idx),
-    .in_data(wr_addr),
+    .in_data(wr_addr[7:0]),
     .out_00(wr_addr_0),
     .out_01(wr_addr_1),
     .out_02(wr_addr_2),
     .out_03(wr_addr_3),
     .out_04(wr_addr_4),
     .out_05(wr_addr_5),
-    .out_06(0),
-    .out_07(0),
-    .out_08(0),
-    .out_09(0)
+    .out_06(),
+    .out_07(),
+    .out_08(),
+    .out_09()
 );
 
 DEMUX1_10 #(.WIDTH(1)) demux_we_inst(
@@ -138,10 +138,10 @@ DEMUX1_10 #(.WIDTH(1)) demux_we_inst(
     .out_03(we_3),
     .out_04(we_4),
     .out_05(we_5),
-    .out_06(0),
-    .out_07(0),
-    .out_08(0),
-    .out_09(0)
+    .out_06(),
+    .out_07(),
+    .out_08(),
+    .out_09()
 );
 
 Src_buf_5P src_buf_0(

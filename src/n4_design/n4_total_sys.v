@@ -4,7 +4,8 @@ module Total_Sys(
     din,
     wr_addr,
     we,
-    en
+    en,
+    res
 );
 
 input  clk;
@@ -56,6 +57,16 @@ wire [16*5-1: 0]    c3s4_buf_rd_data_5P_5;
 wire [31: 0]        c3s4_buf_wr_addr_1P;
 wire [15: 0]        c3s4_buf_wr_data_1P;
 wire                c3s4_buf_wr_en;
+
+
+reg  den1_en;
+wire den1_fin;
+wire [31: 0]        den1_buf_rd_addr_1P;
+wire [16*25-1: 0]   den1_buf_rd_data_25P;
+
+wire [31: 0]        den1_buf_wr_addr_1P;
+wire [15: 0]        den1_buf_wr_data_1P;
+wire                den1_buf_wr_en;
 
 
 C1_Src_buf C1_buf_inst(
@@ -130,6 +141,44 @@ C3S4_layer C3S4_layer(
 );
 
 
+Shift_Ram #(.DEPTH(16), DATA_WIDTH(16), .LENGTH(25)) Den1_src_buf(
+    .rst_n(rst_n),
+    .clk(clk),
+    .we(c3s4_buf_wr_en),
+    .din(c3s4_buf_wr_data_1P),
+    .wr_addr(c3s4_buf_wr_addr_1P / 25),
+    .rd_addr(den1_buf_rd_addr_1P),
+    .dout(den1_buf_rd_data_25P)
+);
+
+Dense1_layer den1_inst(
+    .clk(clk),
+    .rst_n(rst_n),
+    
+    .en(den1_en),
+    
+    .rd_addr_out_1P(den1_buf_rd_addr_1P),
+    .rd_data_in_25P(den1_buf_rd_data_25P),
+
+    .wr_addr_out(den1_buf_wr_addr_1P),
+    .wr_data_out(den1_buf_wr_data_1P),
+    .wr_en_out(den1_buf_wr_en),
+    
+    .work_finished(den1_fin)
+);
+
+/*
+Shift_Ram #(.DEPTH(5), DATA_WIDTH(16), .LENGTH(25)) Den2_src_buf(
+    .rst_n(rst_n),
+    .clk(clk),
+    .we(),
+    .din(),
+    .wr_addr(),
+    .rd_addr(),
+    .dout()
+);
+
+*/
 reg we_sync;
 wire negedge_we;
 always @(posedge clk)
@@ -167,8 +216,6 @@ begin
         begin
             if (en && negedge_we)
                 sys_stats <= C1S2_RUNNING;
-            else if (en)
-                sys_stats <= IDLE;
         end
         C1S2_RUNNING:
         begin
@@ -180,6 +227,7 @@ begin
              begin
                  c1s2_en <= 0;
                  stall_cnt <= 0;
+                 sys_stats <= C1S2_FIN;
              end 
         end
         C1S2_FIN:
@@ -196,14 +244,15 @@ begin
         end 
         C3S4_RUNNING:
         begin
-             if (en && !c3s4_fin)
+             if (!c3s4_fin)
              begin
                  c3s4_en <= 1;
              end 
-             else if (c1s2_fin)
+             else
              begin
                  c3s4_en <= 0;
                  stall_cnt <= 0;
+                 sys_stats <= C3S4_FIN;
              end 
         end 
         C3S4_FIN:

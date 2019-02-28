@@ -25,7 +25,7 @@ Total_Sys DUT(
     .clk(clk),
     .rst_n(rst_n),
     .din(din),
-    .wr_addr(din),
+    .wr_addr(wr_addr),
     .we(we),
     .en(en)
 );
@@ -47,16 +47,16 @@ begin
     rst_n = 1;
     #100;
     we = 1;
+    en = 1;
     #3;
     for (i = 0; i < 6*1024; i = i + 1)
     begin
         @(posedge clk)
         din <= i + 10000;
-        dindindin <= i;
+        wr_addr <= i;
     end
     #1;
     we = 0;
-    en = 1;
     for (k = 0; k < 1; k= k +1)
     begin 
         #1000;
@@ -117,7 +117,7 @@ assign rd_addr_out1 = rd_addr_5P_w[(2 + 1)*32-1: 1*32];
 assign rd_addr_out2 = rd_addr_5P_w[(3 + 1)*32-1: 2*32];
 assign rd_addr_out3 = rd_addr_5P_w[(4 + 1)*32-1: 3*32];
 assign rd_addr_out4 = rd_addr_5P_w[(5 + 1)*32-1: 4*32];
-
+/*
 
 C1S2_layer DUT(
 
@@ -133,7 +133,7 @@ C1S2_layer DUT(
 .wr_addr_out_1P(wr_addr_out_1P),
 .wr_data_out_1P(wr_data_out_1P),
 .wr_out_en(wr_out_en)
-);
+);*/
 
 
 endmodule 

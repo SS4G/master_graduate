@@ -1,6 +1,7 @@
 module C3_sub_module(
     clk,
     rst_n,
+    en,
     anchor_rom_output_valid,
     addr_out_25P_w,
     rd_data_in_5P,
@@ -9,11 +10,13 @@ module C3_sub_module(
 
     inner_product_out,
     kernel_bias_idx,
-    kernel_calculating_pulse
+    kernel_calculating_pulse,
+    rd_addr_out_5P
 );
 
 input clk;
 input rst_n;
+input en;
 input anchor_rom_output_valid;
 input [31*25-1:0] addr_out_25P_w;
 input [16*5-1:0] rd_data_in_5P;
@@ -23,18 +26,19 @@ input [16*25 - 1: 0] kernel_out;
 output [15:0] inner_product_out;
 output reg [7:0]  kernel_bias_idx;
 output reg kernel_calculating_pulse;
+output [32*5-1:0] rd_addr_out_5P;
 
+parameter KERNEL_NUM = 16;
 
-reg  [5*32-1: 0] addr_out_5P_r [4: 0];
 
 //输出读取地址相关
 wire [25*32 - 1 : 0] addr_out_25P_w;
 reg  [5*32-1: 0] addr_out_5P_r [4: 0];
-reg  [3:0] addr_out_idx;
+reg  [5:0] addr_out_idx;
 
 //读入数据相关
 wire  rd_data_in_valid;
-reg  [2:0] data_in_idx;
+reg  [5:0] data_in_idx;
 
 //25 word数据准备缓冲 以及数据分配逻辑
 reg data_buf25_switch;
@@ -60,10 +64,14 @@ InnerProduct_25P inner_product_inst(
 
 
 //读取地址分发
-assign  anchor_rom_output_valid = anchor_perido_cnt == 1;
-assign  rd_addr_out_5P = addr_out_idx != 5 ? addr_out_5P_r[addr_out_idx] : 'bz;
-assign  data_buf25_change = addr_out_idx == 5; //表明下个周期将发生改变
+assign  rd_addr_out_5P = addr_out_idx < 5 ? addr_out_5P_r[addr_out_idx] : 32'h0;
+assign  data_buf25_change = addr_out_idx == 5 && en; //表明下个周期将发生改变
 assign  rd_data_in_valid = addr_out_idx != 0;
+
+assign data_buf25_0_w = {data_buf25_0_r[4], data_buf25_0_r[3], data_buf25_0_r[2], data_buf25_0_r[1], data_buf25_0_r[0]};
+assign data_buf25_1_w = {data_buf25_1_r[4], data_buf25_1_r[3], data_buf25_1_r[2], data_buf25_1_r[1], data_buf25_1_r[0]};
+assign data_buf25 = data_buf25_switch == 0 ? data_buf25_0_w : data_buf25_1_w;
+
 always @(posedge clk or negedge rst_n)
 begin
     if(!rst_n)
@@ -81,16 +89,6 @@ begin
         end
         else
         begin
-            /*
-            if (addr_out_idx == 0)
-            begin
-               rd_data_in_valid <= 1;
-            end
-            else if (addr_out_idx == 5)
-            begin
-               rd_data_in_valid <= 0;
-            end       
-            else*/
             addr_out_idx <= addr_out_idx + 1;
         end
     end 
@@ -128,7 +126,6 @@ begin
            if (data_in_idx == 4)
            begin
                data_buf25_switch <= ~data_buf25_switch; //翻转数据选择
-               
            end 
         end
         else

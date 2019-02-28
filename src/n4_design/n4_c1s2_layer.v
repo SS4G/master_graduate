@@ -94,7 +94,6 @@ wire [31 : 0] kernel_offset;
 reg [7:0] pool_out_kernel_idx;
 reg [31: 0] anchor_out_addr;
 reg  output_flag;
-reg st_flag;
 
 assign wr_out_en = wr_out_en_r;
 assign anchor_addr[31:16] = 0;
@@ -142,7 +141,7 @@ C1_kernal C1_Kernel_inst(
 );
 
 //延迟信号和计算值流动的一致
-Delay #(.WIDTH(16), .DELAY_CYCLE(6)) Delay_instx( 
+Delay #(.WIDTH(1), .DELAY_CYCLE(6)) Delay_instx( 
     .clk(clk),
     .din(kernel_calculating_pulse),
     .dout(kernel_calculating_delay_pulse)    
@@ -200,8 +199,8 @@ end
 
 //读取地址分发
 assign  anchor_rom_output_valid = anchor_perido_cnt == 1;
-assign  rd_addr_out_5P = addr_out_idx != 5 ? addr_out_5P_r[addr_out_idx] : 'bz;
-assign  data_buf25_change = addr_out_idx == 5; //表明下个周期将发生改变
+assign  rd_addr_out_5P = addr_out_idx != 5 ? addr_out_5P_r[addr_out_idx] : 32'hffffffff;
+assign  data_buf25_change = addr_out_idx == 5 && en; //表明下个周期将发生改变
 assign  rd_data_in_valid = addr_out_idx != 0;
 always @(posedge clk or negedge rst_n)
 begin
@@ -348,7 +347,7 @@ begin
         begin 
             if (pool_buffer_cnt[pool_buffer_idx] == 4)
             begin
-                pool_buffer_cnt[pool_buffer_idx] <= 0;
+                pool_buffer_cnt[pool_buffer_idx] <= 1;
             end
             else 
             begin

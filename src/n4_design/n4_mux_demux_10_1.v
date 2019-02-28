@@ -48,6 +48,84 @@ begin
 end
 endmodule 
 
+module MUX16_1(
+select,
+output_data,
+in_00,
+in_01,
+in_02,
+in_03,
+in_04,
+in_05,
+in_06,
+in_07,
+in_08,
+in_09,
+in_10,
+in_11,
+in_12,
+in_13,
+in_14,
+in_15
+);
+
+parameter WIDTH = 16;
+input  [7: 0] select;
+output [WIDTH-1: 0] output_data;
+input  [WIDTH-1: 0] in_00;
+input  [WIDTH-1: 0] in_01;
+input  [WIDTH-1: 0] in_02;
+input  [WIDTH-1: 0] in_03;
+input  [WIDTH-1: 0] in_04;
+input  [WIDTH-1: 0] in_05;
+input  [WIDTH-1: 0] in_06;
+input  [WIDTH-1: 0] in_07;
+input  [WIDTH-1: 0] in_08;
+input  [WIDTH-1: 0] in_09;
+input  [WIDTH-1: 0] in_10;
+input  [WIDTH-1: 0] in_11;
+input  [WIDTH-1: 0] in_12;
+input  [WIDTH-1: 0] in_13;
+input  [WIDTH-1: 0] in_14;
+input  [WIDTH-1: 0] in_15;
+
+wire  [WIDTH-1: 0] tmp_data_0;
+wire  [WIDTH-1: 0] tmp_data_1;
+
+MUX10_1 #(.WIDTH(WIDTH)) mux_inst0(
+    .select({5'h0,select[2:0]}),
+    .output_data(tmp_data_0),
+    .in_00(in_00),
+    .in_01(in_01),
+    .in_02(in_02),
+    .in_03(in_03),
+    .in_04(in_04),
+    .in_05(in_05),
+    .in_06(in_06),
+    .in_07(in_07),
+    .in_08(0),
+    .in_09(0)
+);
+
+MUX10_1 #(.WIDTH(WIDTH)) mux_inst1(
+    .select({5'h0,select[2:0]}),
+    .output_data(tmp_data_1),
+    .in_00(in_08),
+    .in_01(in_09),
+    .in_02(in_10),
+    .in_03(in_11),
+    .in_04(in_12),
+    .in_05(in_13),
+    .in_06(in_14),
+    .in_07(in_15),
+    .in_08(0),
+    .in_09(0)
+);
+
+assign output_data = select[3] == 0 ? tmp_data_0 : tmp_data_1;
+
+endmodule 
+
 module DEMUX1_10(
     select,
     in_data,
@@ -216,3 +294,21 @@ begin
     endcase 
 end
 endmodule 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

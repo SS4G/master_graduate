@@ -10,7 +10,12 @@ module Dense3_layer(
     wr_data_out,
     wr_en_out,
     
-    work_finished
+    work_finished,
+    
+    bias,
+    in_vecA_25P,
+    in_vecB_25P,
+    out_1P
 );
 
 input clk;
@@ -24,6 +29,11 @@ input  [16*25-1:0] rd_data_in_25P;
 output reg [31:0] wr_addr_out;
 output reg [15:0] wr_data_out;
 output reg wr_en_out;
+    
+output [15:0]  bias;
+output [25*16-1:0] in_vecA_25P;
+output [25*16-1:0] in_vecB_25P;
+input [15:0] out_1P;
     
 parameter ROW_NUM_OFFSET = 4; //每个ROW对应多少个OFFSET
 parameter OFFSET_LENGTH = 25;
@@ -83,6 +93,7 @@ dense_3_params dense_3_params_inst (
   .douta(kernel_out)  // output wire [399 : 0] douta
 );
 
+/*
 InnerProduct_25P inner_product_inst(
     .clk(clk),
     .bias(bias_out),
@@ -90,7 +101,12 @@ InnerProduct_25P inner_product_inst(
     .in_vecB_25P(rd_data_in_25P),
     .out_1P(inner_product_out)
 );
+*/
 
+assign inner_product_out = out_1P;
+assign in_vecA_25P = kernel_out;
+assign in_vecB_25P = rd_data_in_25P;
+assign bias = bias_out;
 
 Delay #(.WIDTH(1), .DELAY_CYCLE(INNER_DELAY)) Delay_instx_inner( 
     .clk(clk),

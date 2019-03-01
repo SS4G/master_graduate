@@ -17,6 +17,9 @@ input  en;
 
 output [7: 0] res;
 
+
+
+parameter STALL_PERIDO = 1000;
 parameter IDLE = "IDLE";
 parameter INPUT_RECIVING = "IN_RV";
 parameter C1S2_RUNNING = "C1S2_R";
@@ -32,6 +35,10 @@ parameter DEN3_FIN = "DEN3_F";
 parameter ALL_FIN = "ALL_F";
 
 //总状态机变量
+
+reg [15: 0] max_res;
+reg [7 : 0] max_idx;
+
 reg [10*8-1:0] sys_stats;
 reg [31: 0]    stall_cnt;
 
@@ -88,6 +95,7 @@ wire [31: 0]        den3_buf_wr_addr_1P;
 wire [15: 0]        den3_buf_wr_data_1P;
 wire                den3_buf_wr_en;
 
+assign res = max_idx;
 
 C1_Src_buf C1_input_buffer(
 .clk(clk),
@@ -198,6 +206,36 @@ Shift_Ram #(.DEPTH(5), .DATA_WIDTH(16), .LENGTH(25)) Dense_2_input_buffer(
     .dout(den2_buf_rd_data_25P)
 );
 
+
+wire [15:0] bias_den2;
+wire [25*16-1:0] in_vecA_25P_den2;
+wire [25*16-1:0] in_vecB_25P_den2;
+wire [15:0] out_1P_den2;
+
+wire [15:0] bias_den3;
+wire [25*16-1:0] in_vecA_25P_den3;
+wire [25*16-1:0] in_vecB_25P_den3;
+wire [15:0] out_1P_den3;
+
+wire [15:0] common_bias;
+wire [25*16-1:0] common_vecB_25P;
+wire [25*16-1:0] common_vecA_25P;
+wire [15:0] common_inner_product_out;
+
+assign common_bias = den2_en ? bias_den2 : bias_den3;
+assign common_vecB_25P = den2_en ? in_vecB_25P_den2 : in_vecB_25P_den3;
+assign common_vecA_25P = den2_en ? in_vecA_25P_den2 : in_vecA_25P_den3;
+assign out_1P_den2 = den2_en ? common_inner_product_out : 0;
+assign out_1P_den3 = den3_en ? common_inner_product_out : 0;
+
+InnerProduct_25P inner_product_inst(
+    .clk(clk),
+    .bias(common_bias),
+    .in_vecA_25P(common_vecB_25P),
+    .in_vecB_25P(common_vecA_25P),
+    .out_1P(common_inner_product_out)
+);
+
 Dense2_layer Dense_2_layer(
     .clk(clk),
     .rst_n(rst_n),
@@ -211,10 +249,15 @@ Dense2_layer Dense_2_layer(
     .wr_data_out(den2_buf_wr_data_1P),
     .wr_en_out(den2_buf_wr_en),
     
-    .work_finished(den2_fin)
+    .work_finished(den2_fin),
+    
+    .bias(bias_den2),
+    .in_vecA_25P(in_vecA_25P_den2),
+    .in_vecB_25P(in_vecB_25P_den2),
+    .out_1P(out_1P_den2)
 );
 
-Shift_Ram #(.DEPTH(4), .DATA_WIDTH(16), .LENGTH(25)) Dense3_input_buffer(
+Shift_Ram #(.DEPTH(4), .DATA_WIDTH(16), .LENGTH(25)) Dense_3_input_buffer(
     .rst_n(rst_n),
     .clk(clk),
     .we(den2_buf_wr_en),
@@ -238,7 +281,12 @@ Dense3_layer Dense_3_layer(
     .wr_data_out(den3_buf_wr_data_1P),
     .wr_en_out(den3_buf_wr_en),
     
-    .work_finished(den3_fin)
+    .work_finished(den3_fin),
+    
+    .bias(bias_den3),
+    .in_vecA_25P(in_vecA_25P_den3),
+    .in_vecB_25P(in_vecB_25P_den3),
+    .out_1P(out_1P_den3)
 );
 
 reg we_sync;
@@ -266,6 +314,7 @@ begin
             if (en)
             begin
                 sys_stats <= INPUT_RECIVING;
+                max_res <= 0;
             end 
             else
             begin 
@@ -294,7 +343,7 @@ begin
         end
         C1S2_FIN:
         begin
-            if (stall_cnt == 1000)
+            if (stall_cnt == STALL_PERIDO)
             begin 
                  stall_cnt <= 0;
                  sys_stats <= C3S4_RUNNING; 
@@ -319,7 +368,7 @@ begin
         end 
         C3S4_FIN:
         begin
-            if (stall_cnt == 1000)
+            if (stall_cnt == STALL_PERIDO)
             begin 
                  stall_cnt <= 0;
                  sys_stats <= DEN1_RUNNING; 
@@ -344,7 +393,7 @@ begin
         end 
         DEN1_FIN:
         begin
-            if (stall_cnt == 1000)
+            if (stall_cnt == STALL_PERIDO)
             begin 
                  stall_cnt <= 0;
                  sys_stats <= DEN2_RUNNING; 
@@ -369,7 +418,7 @@ begin
         end 
         DEN2_FIN:
         begin
-            if (stall_cnt == 1000)
+            if (stall_cnt == STALL_PERIDO)
             begin 
                  stall_cnt <= 0;
                  sys_stats <= DEN3_RUNNING; 
@@ -384,6 +433,11 @@ begin
             if (!den3_fin)
             begin
                 den3_en <= 1;
+                if (den3_buf_wr_en && den3_buf_wr_data_1P > max_res)
+                begin 
+                    max_idx <= den3_buf_wr_addr_1P;
+                    max_res <= den3_buf_wr_data_1P;
+                end                
             end 
             else
             begin
@@ -394,7 +448,7 @@ begin
         end 
         DEN3_FIN:
         begin
-            if (stall_cnt == 1000)
+            if (stall_cnt == STALL_PERIDO)
             begin 
                  stall_cnt <= 0;
                  sys_stats <= ALL_FIN; 
@@ -406,7 +460,7 @@ begin
         end 
         ALL_FIN:
         begin
-             #1000;
+             #STALL_PERIDO;
              $finish;
              sys_stats <= IDLE;
         end  

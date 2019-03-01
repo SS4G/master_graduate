@@ -1,3 +1,4 @@
+`timescale 10ns/10ns
 module n4_c1s2_tb;
 reg  clk;
 reg  rst_n;
@@ -5,6 +6,7 @@ reg  we;
 reg  layer_c1s2_en;
 reg  [31:0] wr_addr;
 reg  [15:0] din;
+reg  [31:0] time_ruler;
 reg  [32*5-1:0] rd_addr_5P_r;
 wire [32*5-1:0] rd_addr_5P_w;
 wire [15:0] wr_data_out_1P;
@@ -82,6 +84,19 @@ begin
     end
     $finish;
 end 
+
+
+always @(posedge clk or negedge rst_n)
+begin
+    if (!rst_n)
+    begin
+        time_ruler <= 0;
+    end
+    else
+    begin
+        time_ruler <= time_ruler + 1;
+    end
+end
 
 assign a0 = rd_addr_5P_r[32*(0 + 1):0*32];
 assign a1 = rd_addr_5P_r[32*(1 + 1):1*32];

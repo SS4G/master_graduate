@@ -58,7 +58,7 @@ wire [31: 0]        c3s4_buf_wr_addr_1P;
 wire [15: 0]        c3s4_buf_wr_data_1P;
 wire                c3s4_buf_wr_en;
 
-
+//den1 
 reg  den1_en;
 wire den1_fin;
 wire [31: 0]        den1_buf_rd_addr_1P;
@@ -68,8 +68,28 @@ wire [31: 0]        den1_buf_wr_addr_1P;
 wire [15: 0]        den1_buf_wr_data_1P;
 wire                den1_buf_wr_en;
 
+//den2
+reg  den2_en;
+wire den2_fin;
+wire [31: 0]        den2_buf_rd_addr_1P;
+wire [16*25-1: 0]   den2_buf_rd_data_25P;
 
-C1_Src_buf C1_buf_inst(
+wire [31: 0]        den2_buf_wr_addr_1P;
+wire [15: 0]        den2_buf_wr_data_1P;
+wire                den2_buf_wr_en;
+
+//den3
+reg  den3_en;
+wire den3_fin;
+wire [31: 0]        den3_buf_rd_addr_1P;
+wire [16*25-1: 0]   den3_buf_rd_data_25P;
+
+wire [31: 0]        den3_buf_wr_addr_1P;
+wire [15: 0]        den3_buf_wr_data_1P;
+wire                den3_buf_wr_en;
+
+
+C1_Src_buf C1_input_buffer(
 .clk(clk),
 .rd_addr_5P(c1s2_buf_rd_addr_5P),
 .rd_data_5P(c1s2_buf_rd_data_5P),
@@ -78,7 +98,7 @@ C1_Src_buf C1_buf_inst(
 .we(we)
 );
 
-C1S2_layer C1S2_layer_inst(
+C1S2_layer C1S2_layer(
 
 .clk(clk),
 .rst_n(rst_n),
@@ -95,7 +115,7 @@ C1S2_layer C1S2_layer_inst(
 .wr_out_en(c1s2_buf_wr_en)
 );
 
-C3_Src_buf C3_buf_inst(
+C3_Src_buf C3_input_buffer(
 .clk(clk),
 .rd_addr_5P_0(c3s4_buf_rd_addr_5P),
 .rd_addr_5P_1(c3s4_buf_rd_addr_5P),
@@ -141,7 +161,7 @@ C3S4_layer C3S4_layer(
 );
 
 
-Shift_Ram #(.DEPTH(16), DATA_WIDTH(16), .LENGTH(25)) Den1_src_buf(
+Shift_Ram #(.DEPTH(16), .DATA_WIDTH(16), .LENGTH(25)) Dense_1_input_buffer(
     .rst_n(rst_n),
     .clk(clk),
     .we(c3s4_buf_wr_en),
@@ -167,18 +187,60 @@ Dense1_layer den1_inst(
     .work_finished(den1_fin)
 );
 
-/*
-Shift_Ram #(.DEPTH(5), DATA_WIDTH(16), .LENGTH(25)) Den2_src_buf(
+
+Shift_Ram #(.DEPTH(5), .DATA_WIDTH(16), .LENGTH(25)) Dense_2_input_buffer(
     .rst_n(rst_n),
     .clk(clk),
-    .we(),
-    .din(),
-    .wr_addr(),
-    .rd_addr(),
-    .dout()
+    .we(den1_buf_wr_en),
+    .din(den1_buf_wr_data_1P),
+    .wr_addr(den1_buf_wr_addr_1P / 25),
+    .rd_addr(den2_buf_rd_addr_1P),
+    .dout(den2_buf_rd_data_25P)
 );
 
-*/
+Dense2_layer Dense_2_layer(
+    .clk(clk),
+    .rst_n(rst_n),
+    
+    .en(den2_en),
+    
+    .rd_addr_out_1P(den2_buf_rd_addr_1P),
+    .rd_data_in_25P(den2_buf_rd_data_25P),
+
+    .wr_addr_out(den2_buf_wr_addr_1P),
+    .wr_data_out(den2_buf_wr_data_1P),
+    .wr_en_out(den2_buf_wr_en),
+    
+    .work_finished(den2_fin)
+);
+
+Shift_Ram #(.DEPTH(4), .DATA_WIDTH(16), .LENGTH(25)) Dense3_input_buffer(
+    .rst_n(rst_n),
+    .clk(clk),
+    .we(den2_buf_wr_en),
+    .din(den2_buf_wr_data_1P),
+    .wr_addr(den2_buf_wr_addr_1P / 25),
+    .rd_addr(den3_buf_rd_addr_1P),
+    .dout(den3_buf_rd_data_25P)
+);
+
+
+Dense3_layer Dense_3_layer(
+    .clk(clk),
+    .rst_n(rst_n),
+    
+    .en(den3_en),
+    
+    .rd_addr_out_1P(den3_buf_rd_addr_1P),
+    .rd_data_in_25P(den3_buf_rd_data_25P),
+
+    .wr_addr_out(den3_buf_wr_addr_1P),
+    .wr_data_out(den3_buf_wr_data_1P),
+    .wr_en_out(den3_buf_wr_en),
+    
+    .work_finished(den3_fin)
+);
+
 reg we_sync;
 wire negedge_we;
 always @(posedge clk)
@@ -260,15 +322,94 @@ begin
             if (stall_cnt == 1000)
             begin 
                  stall_cnt <= 0;
-                 $finish;
-                 sys_stats <= IDLE; 
+                 sys_stats <= DEN1_RUNNING; 
             end 
             else
             begin
                  stall_cnt <= stall_cnt + 1;
             end
         end
-        
+        DEN1_RUNNING:
+        begin
+            if (!den1_fin)
+            begin
+                den1_en <= 1;
+            end 
+            else
+            begin
+                den1_en <= 0;
+                stall_cnt <= 0;
+                sys_stats <= DEN1_FIN;
+            end 
+        end 
+        DEN1_FIN:
+        begin
+            if (stall_cnt == 1000)
+            begin 
+                 stall_cnt <= 0;
+                 sys_stats <= DEN2_RUNNING; 
+            end 
+            else
+            begin
+                 stall_cnt <= stall_cnt + 1;
+            end             
+        end 
+        DEN2_RUNNING:
+        begin
+            if (!den2_fin)
+            begin
+                den2_en <= 1;
+            end 
+            else
+            begin
+                den2_en <= 0;
+                stall_cnt <= 0;
+                sys_stats <= DEN2_FIN;
+            end 
+        end 
+        DEN2_FIN:
+        begin
+            if (stall_cnt == 1000)
+            begin 
+                 stall_cnt <= 0;
+                 sys_stats <= DEN3_RUNNING; 
+            end 
+            else
+            begin
+                 stall_cnt <= stall_cnt + 1;
+            end             
+        end 
+        DEN3_RUNNING:
+        begin
+            if (!den3_fin)
+            begin
+                den3_en <= 1;
+            end 
+            else
+            begin
+                den3_en <= 0;
+                stall_cnt <= 0;
+                sys_stats <= DEN3_FIN;
+            end 
+        end 
+        DEN3_FIN:
+        begin
+            if (stall_cnt == 1000)
+            begin 
+                 stall_cnt <= 0;
+                 sys_stats <= ALL_FIN; 
+            end 
+            else
+            begin
+                 stall_cnt <= stall_cnt + 1;
+            end             
+        end 
+        ALL_FIN:
+        begin
+             #1000;
+             $finish;
+             sys_stats <= IDLE;
+        end  
         default:;
         endcase
     end

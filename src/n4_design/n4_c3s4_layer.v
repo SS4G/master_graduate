@@ -544,11 +544,10 @@ wire [31:0] rd_addr_out3;
 wire [31:0] rd_addr_out4;
 
 
-assign rd_addr_out0 = rd_addr_out_5P[(1 + 1)*32-1: 0*32];
-assign rd_addr_out1 = rd_addr_out_5P[(2 + 1)*32-1: 1*32];
-assign rd_addr_out2 = rd_addr_out_5P[(3 + 1)*32-1: 2*32];
-assign rd_addr_out3 = rd_addr_out_5P[(4 + 1)*32-1: 3*32];
-assign rd_addr_out4 = rd_addr_out_5P[(5 + 1)*32-1: 4*32];
-
+assign rd_addr_out0 = rd_addr_out_5P[(0 + 1)*32-1: 0*32];
+assign rd_addr_out1 = rd_addr_out_5P[(1 + 1)*32-1: 1*32];
+assign rd_addr_out2 = rd_addr_out_5P[(2 + 1)*32-1: 2*32];
+assign rd_addr_out3 = rd_addr_out_5P[(3 + 1)*32-1: 3*32];
+assign rd_addr_out4 = rd_addr_out_5P[(4 + 1)*32-1: 4*32];
 
 endmodule 

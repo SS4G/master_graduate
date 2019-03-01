@@ -19,10 +19,9 @@ input we;
 input  [DATA_WIDTH-1:0] din;
 input  [7:0] wr_addr;
 input  [7:0] rd_addr;
-output [DATA_WIDTH*LENGTH-1:0] dout;
+output reg [DATA_WIDTH*LENGTH-1:0] dout;
 
 reg [DATA_WIDTH*LENGTH-1:0] mem [DEPTH-1:0];
-assign dout = mem[rd_addr];
 
 integer p;
 always @(posedge clk or negedge rst_n)
@@ -40,6 +39,7 @@ begin
         begin 
             mem[wr_addr] <= {din, mem[wr_addr][DATA_WIDTH*LENGTH-1: DATA_WIDTH]}; 
         end   
+        dout <= mem[rd_addr];
     end
 end 
 endmodule 
